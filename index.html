@@ -26,9 +26,8 @@
                 <div id="overall_satistics">
                     <span id="time_cur">0纪0年0日000:00</span><br>
                     (流速 <span id="time_spd">10h</span>/s)<br><br>
-                    家族总喵口 : <span id="total_cat"style="color:pink">0c</span><br>
-                    家族总工时 : <span id="total_workhour" style="color:lightblue">0wh/w</span><br><br>
-
+                    总喵口 : <span id="total_cat"style="color:pink">0c</span><br>
+                    总工时 : <span id="total_workhour" style="color:lightblue">0wh/w'</span><br><br>
                 </div>
                 <div id="tab_change_buttons">
                     <div id="family_button" class="tab_button" onclick="change_tab('family')">
@@ -47,15 +46,15 @@
                     <div id="get_member"class="family_button" onclick="get_member()">
                         招揽一名<br><b>[微尘级初等]</b>成员
                     </div>
-                    ↓家族成员表！
+                    ↓家族成员表(新生速度 <span id="main_birth_monitor">0</span> c/s)
                     <table id="family_members">
                         <thead><tr>
                             <th class="member_list_header member_list_realm">族<span class='realm_terra'>喵</span><span class='realm_sky'>境</span><span class='realm_cloudy'>界</span></th>
                             <th class="member_list_header member_list_count">境界喵数</th>
-                            <th class="member_list_header member_list_change"><span style='color:lightgreen'>突破</span>/<span style='color:lightcoral'>死亡</span>率</th>
-                            <th class="member_list_header member_list_ttlchange"><span style='color:lightgreen'>突破</span>/<span style='color:lightcoral'>死亡</span>期望</th>
-                            <th class="member_list_header member_list_workhour" style="color:lightblue">工时/总工时</th>
-                            <th class="member_list_header member_list_timedtb" style="color:lightgoldenrodyellow">时间分配@工作|休息|修炼</th>
+                            <th class="member_list_header member_list_ttlchange"><span style='color:lightgreen'>突破期望<br>(c/s)</span></th>
+                            <th class="member_list_header member_list_ttlchange"><span style='color:lightcoral'>死亡期望<br>(c/s)</span></th>
+                            <th class="member_list_header member_list_workhour" style="color:lightblue">工时/总工时<br>(wh/w')</th>
+                            <th class="member_list_header member_list_timedtb" style="color:lightgoldenrodyellow">每周时间分配<br>工作 | 休息 | 修炼</th>
                             
                         </tr></thead>
                         <tbody id="family_member_chart">
@@ -74,8 +73,10 @@
 
                     <span style='color:lightgreen;font-weight:bold'>生育计划 (基础 1c/1920wh): <br>
                     
-                    <span id="reproduce_workhour">0wh/w</span> -> <span id="basic_reproduce">0c/w</span><br>
-                    <span id="1st_reproduce" style="color:yellow"></span>
+                    <span id="reproduce_workhour">0wh/w'</span> ~ <span id="basic_reproduce">0c/w'</span><br>
+                    <span id="1st_reproduce" style="color:yellow"></span><br>
+                    计算流速后 : <span id="final_reproduce"> 0 </span> c/s
+                    
                     </span>
                 </div>
                 <div id="settings_content" style="display:none">

@@ -34,11 +34,12 @@ function renderMain(adt){
     document.getElementById("tps_monitor").innerText = `TPS:${(1/adt).toFixed(2)}(${(adt*1000).toFixed(1)})`;
 
     document.getElementById("autosave_monitor").innerText = player.time.save.toFixed(1);
+    document.getElementById("main_birth_monitor").innerText = format_number(player.family.birt.mul(player.time.spd));
 
     document.getElementById("time_cur").innerText = format_timept(player.time.cur);
     document.getElementById("time_spd").innerText = format_timedur(player.time.spd);
     document.getElementById("total_cat").innerText = format_number(player.family.stats.cnt)+ 'c';
-    document.getElementById("total_workhour").innerText = format_number(player.family.stats.wh)+ 'wh/w';
+    document.getElementById("total_workhour").innerText = format_number(player.family.stats.wh)+ 'wh/w\'';
 }
 function renderFamily(){
     let members = '';
@@ -46,12 +47,12 @@ function renderFamily(){
     
     for(let i=0;i<=player.family.maxrealm;i+=1){
         document.getElementById(`member_list_count_${i}`).innerText = format_number(player.family.cats[i]);
-        document.getElementById(`member_list_break_${i}`).innerText = '('+format_timedur(player.family.rdata[i].br.pow(-1)) + ')⁻¹';
-        document.getElementById(`member_list_death_${i}`).innerText = '('+format_timedur(player.family.rdata[i].dd.pow(-1)) + ')⁻¹';
-        document.getElementById(`member_list_ttlbreak_${i}`).innerText = format_chance_time(player.family.rdata[i].br.mul(player.family.cats[i]));
-        document.getElementById(`member_list_ttldeath_${i}`).innerText = format_chance_time(player.family.rdata[i].dd.mul(player.family.cats[i]));
-        document.getElementById(`member_list_work_${i}`).innerText = format_number(player.family.rdata[i].wk) + 'wh/(w·c)';
-        document.getElementById(`member_list_ttlwork_${i}`).innerText = format_number(player.family.rdata[i].wk.mul(player.family.cats[i])) + 'wh/w';
+        //document.getElementById(`member_list_break_${i}`).innerText = '('+format_timedur(player.family.rdata[i].br.pow(-1)) + ')⁻¹';
+        //document.getElementById(`member_list_death_${i}`).innerText = '('+format_timedur(player.family.rdata[i].dd.pow(-1)) + ')⁻¹';
+        document.getElementById(`member_list_ttlbreak_${i}`).innerText = format_rate_with_spd(player.family.rdata[i].br.mul(player.family.cats[i]));
+        document.getElementById(`member_list_ttldeath_${i}`).innerText = format_rate_with_spd(player.family.rdata[i].dd.mul(player.family.cats[i]));
+        document.getElementById(`member_list_work_${i}`).innerText = format_number(player.family.rdata[i].wk) + '/c';
+        document.getElementById(`member_list_ttlwork_${i}`).innerText = format_number(player.family.rdata[i].wk.mul(player.family.cats[i]));
 
     }
     //console.log('family rended');
@@ -70,6 +71,7 @@ function renderWork(){
         document.getElementById("1st_reproduce").innerText = "因为超过1c/h,生育率受到一重软上限(^0.6)限制,变为" + player.display.birt.sc1;
     }// 1p/h一重软上限
     else document.getElementById("1st_reproduce").innerText = "";
+    document.getElementById("final_reproduce").innerText = format_number(player.family.birt.mul(player.time.spd))
 
     console.log('work rended');
 
@@ -88,10 +90,10 @@ function renderFamilyMembers(){
         let row = '';
         row += `<tr><td class="member_list member_list_realm realm_${REALM_DATA[i][1]}">${REALM_DATA[i][0]}</td>`;
         row += `<td class="member_list member_list_count" id="member_list_count_${i}">0</td>`;
-        row += `<td class="member_list member_list_change"><span style="color:lightgreen" id="member_list_break_${i}" >(1d)⁻¹</span><br><span id="member_list_death_${i}" style="color:lightcoral">(1d)⁻¹</span></td>`;
-        row += `<td class="member_list member_list_ttlchange"><span style="color:lightgreen" id="member_list_ttlbreak_${i}" >0/w</span><br><span id="member_list_ttldeath_${i}" style="color:lightcoral">0/w</span></td>`;
-        row += `<td class="member_list member_list_workhour" style="color:lightblue"><span id="member_list_work_${i}">0wh/(w·c)</span><br><span id="member_list_ttlwork_${i}" >0wh/w</span></td>`;
-        row += `<td class="member_list member_list_timedtb"><span  style="color:lightblue" id="member_list_timework_${i}">${format_number(player.family.rdata[i].timedtb.wk)}h</span> | <span  style="color:lightgreen"><span onclick="change_timedtb(${i},1,-6)">[-]</span><span  id="member_list_timerest_${i}">${format_number(player.family.rdata[i].timedtb.rt)}h</span><span onclick="change_timedtb(${i},1,6)">[+]</span></span> | <span  style="color:lightgoldenrodyellow"><span onclick="change_timedtb(${i},2,-6)">[-]</span><span  id="member_list_timecultivate_${i}">${format_number(player.family.rdata[i].timedtb.ct)}h</span><span onclick="change_timedtb(${i},2,6)">[+]</span></span><br><span id="member_list_time_brate_${i}" style="color:lightgoldenrodyellow">突破:x${format_number(player.family.rdata[i].timedtb.ct.div(60).pow(0.8))}</span> | <span id="member_list_time_drate_${i}" style="color:lightcoral">死亡:x${format_number(player.family.rdata[i].timedtb.rt.add(2).div(62).pow(-0.8))}</span></td>`;
+        //row += `<td class="member_list member_list_change"><span style="color:lightgreen" id="member_list_break_${i}" >(1d)⁻¹</span><br><span id="member_list_death_${i}" style="color:lightcoral">(1d)⁻¹</span></td>`;//这个不需要了……太复杂了。
+        row += `<td class="member_list member_list_ttlchange"><span style="color:lightgreen" id="member_list_ttlbreak_${i}" >0</span></td><td class="member_list member_list_ttlchange"><span id="member_list_ttldeath_${i}" style="color:lightcoral">0</span></td>`;
+        row += `<td class="member_list member_list_workhour" style="color:lightblue"><span id="member_list_work_${i}">0/c</span><br><span id="member_list_ttlwork_${i}" >0</span></td>`;
+        row += `<td class="member_list member_list_timedtb"><span  style="color:lightblue" id="member_list_timework_${i}">${format_number(player.family.rdata[i].timedtb.wk)}h'</span> | <span  style="color:lightgreen"><span onclick="change_timedtb(${i},1,-6)">[-]</span><span  id="member_list_timerest_${i}">${format_number(player.family.rdata[i].timedtb.rt)}h'</span><span onclick="change_timedtb(${i},1,6)">[+]</span></span> | <span  style="color:lightgoldenrodyellow"><span onclick="change_timedtb(${i},2,-6)">[-]</span><span  id="member_list_timecultivate_${i}">${format_number(player.family.rdata[i].timedtb.ct)}h'</span><span onclick="change_timedtb(${i},2,6)">[+]</span></span><br><span id="member_list_time_brate_${i}" style="color:lightgoldenrodyellow">突破:x${format_number(player.family.rdata[i].timedtb.ct.div(60).pow(0.8))}</span> | <span id="member_list_time_drate_${i}" style="color:lightcoral">死亡:x${format_number(player.family.rdata[i].timedtb.rt.add(2).div(62).pow(-0.8))}</span></td>`;
 
         //
         row += '</tr>';
@@ -115,7 +117,7 @@ function change_timedtb(realm,op,change){
                 player.family.rdata[realm].timedtb.rt = player.family.rdata[realm].timedtb.rt.add(change);
             }
         }
-        document.getElementById(`member_list_timerest_${realm}`).innerText = format_number(player.family.rdata[realm].timedtb.rt) + 'h';
+        document.getElementById(`member_list_timerest_${realm}`).innerText = format_number(player.family.rdata[realm].timedtb.rt) + 'h\'';
         document.getElementById(`member_list_time_drate_${realm}`).innerText = '死亡:x' + format_number(player.family.rdata[realm].timedtb.rt.add(2).div(62).pow(-0.8));
         
     }
@@ -132,11 +134,11 @@ function change_timedtb(realm,op,change){
                 player.family.rdata[realm].timedtb.ct = player.family.rdata[realm].timedtb.ct.add(change);
             }
         }
-        document.getElementById(`member_list_timecultivate_${realm}`).innerText = format_number(player.family.rdata[realm].timedtb.ct) + 'h';
+        document.getElementById(`member_list_timecultivate_${realm}`).innerText = format_number(player.family.rdata[realm].timedtb.ct) + 'h\'';
         
         document.getElementById(`member_list_time_brate_${realm}`).innerText = '突破:x' + format_number(player.family.rdata[realm].timedtb.ct.div(60).pow(0.8));
     }
-    document.getElementById(`member_list_timework_${realm}`).innerText = format_number(player.family.rdata[realm].timedtb.wk) + 'h';
+    document.getElementById(`member_list_timework_${realm}`).innerText = format_number(player.family.rdata[realm].timedtb.wk) + 'h\'';
     
         //member_list_time_brate_i
         //member_list_time_drate_i
@@ -169,8 +171,10 @@ function format_number(decimal){
     if(decimal.layer==0 && decimal.mag<1e9)
     {
         if(decimal.mag<1e3){
-            if(decimal.sub(decimal.floor()).abs().lte(0.005)) return sig + decimal.mag.toFixed(0);
-            return sig + decimal.mag.toFixed(2);
+            if(decimal.sub(decimal.floor()).abs().lte(0.00005)) return sig + decimal.mag.toFixed(0);
+            if(decimal.mag>100) return sig + decimal.mag.toFixed(2);
+            if(decimal.mag>10) return sig + decimal.mag.toFixed(3);
+            return sig + decimal.mag.toFixed(4);
         }
         return sig + (Math.round(decimal.mag)).toLocaleString('en-US');
     }//不足1e6的数直接显示
@@ -225,16 +229,16 @@ function format_timedur(decimal){
     //超过9e11纪元显示【时间刻度】，10^n年为n时间刻度
     //超过1e12时间刻度显示时间刻度^2,以此类推
     let time_a = decimal.div(5.4e5);
-    if(time_a.layer==1) return format_number(new Decimal(time_a.sign*time_a.mag)) + ' TT';
+    if(time_a.layer==1) return format_number(new Decimal(time_a.sign*time_a.mag)) + ' TT\'';
     if(time_a.layer>1&&time_a.layer<1e8){
-        return format_number(new Decimal(time_a.sign*time_a.mag)) + ' TT^'+time_a.layer.toLocaleString('en-US');
+        return format_number(new Decimal(time_a.sign*time_a.mag)) + ' TT\'^'+time_a.layer.toLocaleString('en-US');
     }
-    if(time_a.layer >= 1e8) return 'TT^' + format_number(new Decimal(time_a.layer));
-    if(time_a.gt(1e4)) return format_number(time_a.div(1e4)) + 'j';
-    if(time_a.gt(1)) return format_number(time_a) + 'y';
-    if(decimal.gt(1.08e4)) return format_number(decimal.div(1.08e4)) + 'w';
-    if(decimal.gt(60)) return format_number(decimal.div(60)) + 'h';
-    return format_number(decimal) + 'm';
+    if(time_a.layer >= 1e8) return 'TT\'^' + format_number(new Decimal(time_a.layer));
+    if(time_a.gt(1e4)) return format_number(time_a.div(1e4)) + 'j\'';
+    if(time_a.gt(1)) return format_number(time_a) + 'y\'';
+    if(decimal.gt(1.08e4)) return format_number(decimal.div(1.08e4)) + 'w\'';
+    if(decimal.gt(60)) return format_number(decimal.div(60)) + 'h\'';
+    return format_number(decimal) + 'm\'';
 }//时间间隔
 function format_timept(decimal){
     
@@ -284,13 +288,16 @@ function format_timept(decimal){
     return str;
 }//时刻
 function format_chance_time(decimal){
-    if(decimal.gt(1)) return format_number(decimal) + ' c/m';
-    if(decimal.gt(1/60)) return format_number(decimal.mul(60)) + ' c/h';
-    if(decimal.gt(1/10800)) return format_number(decimal.mul(10800)) + ' c/w';
-    if(decimal.gt(1/5.4e5)) return format_number(decimal.mul(5.4e5)) + ' c/y';
-    if(decimal.gt(1/5.4e11)) return format_number(decimal.mul(5.4e9)) + ' c/j';
+    if(decimal.gt(1)) return format_number(decimal) + ' c/m\'';
+    if(decimal.gt(1/60)) return format_number(decimal.mul(60)) + ' c/h\'';
+    if(decimal.gt(1/10800)) return format_number(decimal.mul(10800)) + ' c/w\'';
+    if(decimal.gt(1/5.4e5)) return format_number(decimal.mul(5.4e5)) + ' c/y\'';
+    if(decimal.gt(1/5.4e11)) return format_number(decimal.mul(5.4e9)) + ' c/j\'';
     if(decimal.lte(0)) return '0';
     return '('+format_timedur(decimal.pow(-1)) +')⁻¹';
+}
+function format_rate_with_spd(decimal){
+    return format_number(decimal.mul(player.time.spd));
 }
 
 
