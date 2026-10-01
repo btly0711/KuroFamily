@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<HTML>
+    <head>
+        <link rel = "stylesheet" href = "misc/style.css">
+        
+        <script type="module" src = "src/main.js"> </script>
+
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+        <!--favicon-->
+        <link rel="icon" href="misc/favicon.ico" type="image/x-icon">
+
+
+
+        <Title>血洛家族模拟器</Title>
+    </head>
+    
+    <body onload = "prepareGame()">
+        <div id = "loading_screen">
+            血洛家族模拟器 by 纱雪<br>
+            加载中……<br>
+            (如果在这个界面太久,可能代表存在严重问题!)
+        </div>
+        <div id="global_content">
+            <div id="left_row_content">
+                <div id="overall_satistics">
+                    <span id="time_cur">0纪0年0日000:00</span><br>
+                    (流速 <span id="time_spd">10h</span>/s)<br><br>
+                    家族总喵口 : <span id="total_cat"style="color:pink">0c</span><br>
+                    家族总工时 : <span id="total_workhour" style="color:lightblue">0wh/w</span><br><br>
+
+                </div>
+                <div id="tab_change_buttons">
+                    <div id="family_button" class="tab_button" onclick="change_tab('family')">
+                        家族
+                    </div>
+                    <div id="work_button" class="tab_button" onclick="change_tab('work')">
+                        分工
+                    </div>
+                    <div id="settings_button" class="tab_button" onclick="change_tab('settings')">
+                        设置
+                    </div>
+                </div>
+            </div>
+            <div id="main_content">
+                <div id="family_content" style="display:none">
+                    <div id="get_member"class="family_button" onclick="get_member()">
+                        招揽一名<br><b>[微尘级初等]</b>成员
+                    </div>
+                    ↓家族成员表！
+                    <table id="family_members">
+                        <thead><tr>
+                            <th class="member_list_header member_list_realm">族<span class='realm_terra'>喵</span><span class='realm_sky'>境</span><span class='realm_cloudy'>界</span></th>
+                            <th class="member_list_header member_list_count">境界喵数</th>
+                            <th class="member_list_header member_list_change"><span style='color:lightgreen'>突破</span>/<span style='color:lightcoral'>死亡</span>率</th>
+                            <th class="member_list_header member_list_ttlchange"><span style='color:lightgreen'>突破</span>/<span style='color:lightcoral'>死亡</span>期望</th>
+                            <th class="member_list_header member_list_workhour" style="color:lightblue">工时/总工时</th>
+                            <th class="member_list_header member_list_timedtb" style="color:lightgoldenrodyellow">时间分配@工作|休息|修炼</th>
+                            
+                        </tr></thead>
+                        <tbody id="family_member_chart">
+
+                        </tbody>
+                    </table>
+                    目前(V0.06)封顶境界:<span id="realm_cap" class="realm_basic2">万物级高等</span>
+                </div>
+                <div id="work_content" style="display:none">
+                    
+
+
+                    <span style='color:cyan'>工时分配:</span><br>
+                    <span style='color:yellow'>无业:</span><span class="workhour_span"><span id="workhour_workless">100%</span></span><br>
+                    <span style='color:lightgreen'>生育:</span>   <span class="workhour_span"><span onclick="wh_dtb(1,-20)">[- -]</span> <span onclick="wh_dtb(1,-2)">[-]</span> <span id="workhour_reproduce">0%</span><span onclick="wh_dtb(1,2)">[+]</span> <span onclick="wh_dtb(1,20)">[++]</span></span><br><br>
+
+                    <span style='color:lightgreen;font-weight:bold'>生育计划 (基础 1c/1920wh): <br>
+                    
+                    <span id="reproduce_workhour">0wh/w</span> -> <span id="basic_reproduce">0c/w</span><br>
+                    <span id="1st_reproduce" style="color:yellow"></span>
+                    </span>
+                </div>
+                <div id="settings_content" style="display:none">
+                    <div id="format_switch"class="settings_button" onclick="switch_format()">
+                        计数法:<span id="format_chosen"></span><br>
+                    </div>
+                    显示例 : <span id="format_eg"></span>
+                    <a id="changelog"class="settings_button" href="misc/changelog.html">
+                        <span id="cur_version"></span> / 更新日志
+                    </a>
+                    <a id="help"class="settings_button" href="help.html">
+                        帮助 / 信息
+                    </a>
+                    
+                    <div id="manual_save" class="settings_button" onclick="save_to_local()">
+                        手动保存游戏
+                    </div>
+                    <div id="hard_reset" class="settings_button" onclick="hard_reset()" style="color:red">
+                        ☠硬重置☠
+                    </div>
+                    <label id="load_file" class="settings_button">
+                        导入存档文件
+                        <input type="file" id="load-file-input" accept=".txt" hidden>
+                    </label>
+                    <div id="save_file" class="settings_button" onclick="save_to_file()">
+                        导出存档文件
+                    </div>
+                </div>
+            </div>
+            <div id="tps_autosave">
+                <span id="tps_monitor">TPS:50.0(20.00)</span><br>
+                自动保存:<span id="autosave_monitor">0.00</span>s / 30s
+            </div>
+        </div>
+    </body>
+</HTML>

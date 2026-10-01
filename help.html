@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <head>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" crossorigin="anonymous">
+
+        <!-- 2. KaTeX 核心 js -->
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" crossorigin="anonymous"></script>
+        
+        <!-- 3. 自动渲染扩展（最关键的一行！） -->
+        <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+            onload="renderMathInElement(document.body, {
+            delimiters: [
+                {left: '$$', right: '$$', display: true},
+                {left: '$', right: '$', display: false},
+                {left: '\\(', right: '\\)', display: false},
+                {left: '\\[', right: '\\]', display: true}
+            ]
+            });">
+        </script>
+        <style>
+            body {
+                font-family: Arial, Helvetica, sans-serif;
+            }
+            .collapsible {
+                background-color: #eee;
+                color: #444;
+                cursor: pointer;
+                padding: 18px;
+                width: 100%;
+                border: none;
+                text-align: left;
+                outline: none;
+                font-weight: bold;
+                font-size: 16px;
+                border-top: 1px solid gray;
+            }
+            .collapsible:hover, .collapsible.active {
+                background-color: #ccc;
+            }
+            .content {
+                padding: 0 18px;
+                display: none;
+                overflow: hidden;
+                background-color: #f1f1f1;
+            }
+            .katex-display {
+                text-align: left;
+                margin-left: 1.5em;    /* 或 2em、40px，随你喜欢 */
+                margin-right: auto;
+                width:300px;
+            }
+
+            .realm_terra{
+                color:#75E97E;
+                font-weight: bold;
+            }
+
+            .realm_sky{
+                color:#6FAEE4;
+                font-weight: bold;
+            }
+
+            .realm_cloudy{
+                color:#C76EE7;
+                font-weight: bold;
+            }
+
+            .realm_domain{
+                color:#E06BBB;
+                font-weight: bold;
+            }
+
+            .realm_world{
+                color:#F0EA28;
+                font-weight: bold;
+            }
+
+            #header {
+                background-color: #eee;
+                color: #444;
+                font-size: 20px;
+                padding: 18px;
+                width: fit-content;
+                border: none;
+                text-align: left;
+                outline: none;
+                font-weight: bold;
+                margin-bottom: 20px;
+                font-family: sans-serif;
+            }
+
+            .separated { 
+                border-top: 4px solid gray;
+            }
+        </style>
+    </head>
+
+<div id="header">点击菜单来展开内容</div>
+
+<h3> Kuro_Family V0.05 - Sayuki</h3>
+<h3> 帮助页面</h3>
+<a href="index.html" target="_blank">返回主游戏</a>
+<br><br>
+
+<div id="content_blocks">
+    <button type="button" class="collapsible">现在的游戏结尾是哪里?</button>
+    <div class="content">
+        目前版本，什么都没有藏。
+        可以触碰到生育计划的【一重软上限】可以视为终局了。
+    </div>
+
+    <button type="button" class="collapsible">境界</button>
+    <div class="content">
+        <ul>
+            <li>境界名称
+                <ul>
+                    <li>境界来源：吞噬星空-血洛大陆/我吃西红柿 ~ 猫可露露 ~ 部分原创。</li>
+                    <li>学徒级1-9阶 对应 微尘级/万物级/潮汐级。</li>
+                    <li><span class=realm_terra>行星级 对应 搬山级/踏浪级/腾空级</span></li>
+                    <li><span class=realm_terra>恒星级 对应 登天级/摘星级/揽月级</span></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    <button type="button" class="collapsible">时间</button>
+    <div class="content">
+        <ul>
+            <li>时间单位
+                <ul>
+                    <li>60m(分)=1h(时) 180h=1w(周) 50w=1y(年) 10000y=1j(纪元)</li>
+                    <li>毕竟是异界大陆，所以没有日的概念，周也有偏离……(纱雪os:其实就是懒)</li>
+                    <li>为了以后的设计：10^n年对应nTT(时间刻度)</li>
+                    <li>10^n TT^(k-1)对应nTT^k(高阶刻度)</li>
+                </ul>
+            </li>
+            <li>历法
+                <ul>
+                    <li>年年年年/周周/时时时:分分</li>
+                    <li>在1纪元之后显示【纪元】，万纪元后不显示【分】</li>
+                    <li>百万纪元之后不显示【时】，亿纪元后不显示【周】</li>
+                    <li>兆纪元之后不显示【年】，9001兆纪元后显示【时间刻度】</li>
+                </ul>
+            </li>
+            <li>期望值显示(出生/突破/死亡)
+                <ul>
+                    <li>以(数值/时间单位)显示。</li>
+                    <li>例如3c/w就代表每周期望出现三次事件</li>
+                    <li>c指cat——Neko RPG的传统了，家族成员都是小猫。</li>
+                </ul>
+            </li>
+            <li>出生/死亡率
+                <ul>
+                    <li>以(时间单位)^-1显示。</li>
+                    <li>例如突破率(1.5y)^-1就代表如果此境界人数保持，每1.5年就会突破这么多。</li>
+                    <li>更专业一点的说，括号里的是弛豫时间τ。</li>
+                    <li>毕竟……写Hz或者s^-1的单位更诡异吧。</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    </div>
+
+    <button type="button" class="collapsible separated">致谢与信息</button>
+    <div class="content">
+        <ul>
+            <li><a href="https://miktaew.github.io/yet-another-idle-rpg/" target="_blank">Yet Another Idle RPG</a> - Miktaew , 作为NekoRPG这一mod的原作</li>
+            <li><a href="https://github.com/turuslan/HackTimer" target="_blank">HackTimer</a> - Turuslan, 用于在后台维持网页的运行</li> 
+            <li>图标和样式 - Google</li>
+            <li>剧情/世界观来源: 猫可露露 - 千夜</li>
+    </div>
+    <button type="button" class="collapsible separated">讨论 & 支持游戏</button>
+    <div class="content">
+        纱雪の企鹅:21016947
+        超自然生物吐火研究协会/千夜的 纳可物语(魔塔)讨论群:
+        947190984
+        纱雪的小窝:
+        1030657403.
+        前者偏亲友，后者偏讨论？纱雪也不知道怎么说啦。
+
+
+    </div>
+</div>
+
+<script>
+    const btns = document.getElementsByClassName("collapsible");
+    //const content = document.getElementById("content");
+
+    for(let i = 0; i < btns.length; i++) {
+        btns[i].addEventListener("click", () => {
+            btns[i].classList.toggle("active");
+            const content = btns[i].nextElementSibling;
+            if (content.style.display !== "block"){
+                content.style.display = "block";
+            } else {
+                content.style.display = "none";
+            }
+        });
+    }
+
+    const blocks = document.getElementById("content_blocks");
+    blocks.addEventListener("click", (event) => {
+        if(event.target.classList.contains("collapsible")) {
+            const rect = event.target.nextElementSibling.getBoundingClientRect();
+            const windowHeight = document.documentElement.clientHeight;
+
+            if (rect.top < 0 || rect.bottom > windowHeight) {
+                event.target.nextElementSibling.scrollIntoView({ behavior: 'smooth', block: 'end'});
+            }
+        }
+    });
+    
+</script>
+
+</body>
+</html>

@@ -1,0 +1,211 @@
+body{
+    background-color: #232323;
+    color:aliceblue;
+}
+
+.realm_basic{
+	color:white;
+	font-weight: bold;
+}
+.realm_basic2{
+    color:#EBFFEF;
+    font-weight:bold;
+}
+.realm_basic3{
+    color:#C4FFD0;
+    font-weight:bold;
+}
+
+.realm_terra{
+	color:#75E97E;
+	font-weight: bold;
+}
+
+.realm_sky{
+	color:#6FAEE4;
+	font-weight: bold;
+}
+
+.realm_cloudy{
+	color:#C76EE7;
+	font-weight: bold;
+}
+
+.realm_domain{
+	color:#E06BBB;
+	font-weight: bold;
+}
+
+.realm_world{
+	color:#F0EA28;
+	font-weight: bold;
+}
+#loading_screen {
+    visibility: visible;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    font-size: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #232323;
+}
+#left_row_content{
+    width:16%;
+    height:100%;
+    position:absolute;
+    border-right:5px solid white;
+}
+#main_content{
+    left:18%;
+    position:relative;
+    width:82%;
+    height:100%;
+}
+#tab_change_buttons{
+    width:100%;
+    top:30%;
+    height:70%;
+    position:absolute;
+    border-top:5px solid white;
+    background-color: #303030;
+}
+.tab_button{
+    width:100%;
+    height:50px;
+    position:relative;
+    border:2px solid white;
+    justify-content: center;
+    align-items: center;
+    font-weight:bold;
+    text-align:right;
+    font-size:30px;
+    transition:transform 0.2s ease;
+}
+.tab_button:hover{
+    transform:scale(1.1);
+}
+.tab_button_active{
+    height:41px;
+    border-bottom:12px solid white;
+    background-color: #656565;
+}
+.family_button{
+    
+    width:150px;
+    height:60px;
+    position:relative;
+    border:2px solid white;
+    display: block;
+    justify-content: center;
+    align-items: center;
+    font-weight:bold;
+    text-align:center;
+    font-size:18px;
+    transition:transform 0.2s ease;
+    background-color: #656565;
+}
+.family_button:hover{
+    transform:scale(1.1);
+}
+#changelog{
+    position:absolute;
+    top:0px;
+    left:180px;
+}
+#help{
+    position:absolute;
+    top:0px;
+    left:360px;
+}
+#tps_autosave{
+    text-align: right;
+    top:0px;
+    right:0px;
+    position:absolute;
+}
+.settings_button{
+    width:150px;
+    height:60px;
+    position:relative;
+    border:2px solid white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight:bold;
+    text-align:center;
+    font-size:18px;
+    transition:transform 0.2s ease;
+    background-color: #656565;
+    color:aliceblue;
+}
+.settings_button:hover{
+    transform:scale(1.1);
+}
+.workhour_span{
+    left:50px;
+    width:200px;
+    text-align:center;
+    font-weight:bold;
+    color:lightcyan;
+    position:absolute;
+}
+.member_list_header {
+    border: 2px solid white;
+    text-align: center;
+    font-weight: bold;
+}
+.member_list {
+    border: 1px solid white;
+    text-align: center;
+    font-weight: bold;
+}
+.member_list_realm {
+    width:105px;
+}
+.member_list_count {
+    width:130px;
+}
+.member_list_change {
+    width:95px;
+}
+.member_list_ttlchange {
+    width:110px;
+}
+.member_list_workhour {
+    width:145px;
+}
+.member_list_timedtb{
+    width:200px;
+}
+
+#manual_save{
+    position:absolute;
+    top:90px;
+    left:0px;
+}
+#hard_reset{
+    position:absolute;
+    top:90px;
+    left:180px;
+    background-color:pink;
+}
+#load_file{
+    position:absolute;
+    top:180px;
+    left:0px;
+}
+#save_file{
+    position:absolute;
+    top:180px;
+    left:180px;
+}
+#get_member{
+    background: linear-gradient(to bottom right, white,pink,red,pink,white);
+    left:32%;
+    width:16%;
+}
