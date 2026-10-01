@@ -2,7 +2,7 @@
 
 import {renderGame, renderFamilyMembers,format_number,format_chance_time} from "./display.js";
 import Decimal from "./break_eternity.js";
-const GAME_VERSION = 'V0.06';
+const GAME_VERSION = 'V0.06a';
 let player ={
     time:{
         cur:new Decimal(0),//存储单位:分钟
@@ -175,7 +175,7 @@ function update_work(){
     //work_reproduce
     let reproduce_workhour = player.family.stats.wh.mul(player.work.reproduce);//wh/w
     player.display.birt.wh = format_number(reproduce_workhour)+ 'wh/w';
-    reproduce_workhour = reproduce_workhour.div(5400);//wh/m
+    reproduce_workhour = reproduce_workhour.div(10800);//wh/m
     reproduce_workhour = reproduce_workhour.div(1920);//c/m(这一步可能后续加强?)
 
     player.display.birt.basic = format_chance_time(reproduce_workhour);
