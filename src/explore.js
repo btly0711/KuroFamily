@@ -29,7 +29,11 @@ const EXP_LOCATIONS = [
  */
 let DC_E = new Decimal(Math.E),DC_1 = new Decimal(1),DC_M1 = new Decimal(-1);
 function get_battle_passrate(){
-    return DC_1.minus(EXP_LOCATIONS[player.explore.cur][1].div(player.explore.bb).pow(2).atan().mul(2/Math.PI));
+    if(player.explore.bb.lte(0)) player.explore.bb = new Decimal(1);
+    let ans = DC_1.minus(EXP_LOCATIONS[player.explore.cur][1].div(player.explore.bb).pow(2).atan().mul(2/Math.PI));
+    console.log(ans);
+    if(!ans.sign) return new Decimal(0);
+    return ans;
 }
 function update_explore(dt){
     player.explore.wh = player.family.stats.wh.mul(player.work.explore);
@@ -41,13 +45,13 @@ function update_explore(dt){
         
         player.display.explore.bb = '0ψ';
     }
-    player.explore.trt = player.explore.trt.add(player.time.spd.mul(dt));
+    else player.explore.trt = player.explore.trt.add(player.time.spd.mul(dt));
     player.display.explore.trt = format_timedur(player.explore.trt);
     player.explore.trp = DC_1.minus(DC_E.pow(DC_M1.div(600).mul(player.explore.trt).mul(player.explore.wh.pow(-0.32))))
     //1-e^(-Ctb^(-a)) a=1/4 C=τ0=10h
     player.display.explore.trp = format_number(player.explore.trp.mul(100)) + '%';
 
-    player.explore.bb = player.explore.wh.mul(player.explore.trp);
+    player.explore.bb = player.explore.wh.mul(player.explore.trp).add(1);
     player.display.explore.bb = format_number(player.explore.bb) + 'ψ';
 
     player.display.explore.pr = format_number(get_battle_passrate().mul(100)) + '%';
