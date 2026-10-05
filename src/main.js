@@ -3,7 +3,7 @@
 import {renderGame, renderFamilyMembers,renderExploreLocation,format_number,format_chance_time} from "./display.js";
 import {update_explore, updateRealmcap} from "./explore.js";
 import Decimal from "./break_eternity.js";
-const GAME_VERSION = 'V0.07';
+const GAME_VERSION = 'V0.07a';
 let player ={
     time:{
         cur:new Decimal(0),//存储单位:分钟
@@ -71,7 +71,7 @@ let player ={
 }
 function complete_data(){
     if(!player.work.explore) player.work.explore = new Decimal(0);
-    if(!player.explore ) player.explore = {wh:new Decimal(0),trt:new Decimal(0),trp:new Decimal(0),bp:new Decimal(0),prog:0,cur:1,b_mul:new Decimal(1)};
+    if(!player.explore) player.explore = {wh:new Decimal(0),trt:new Decimal(0),trp:new Decimal(0),bp:new Decimal(0),prog:0,cur:1,b_mul:new Decimal(1)};
     if(!player.explore.cur) player.explore = {wh:new Decimal(0),trt:new Decimal(0),trp:new Decimal(0),bp:new Decimal(0),prog:0,cur:1,b_mul:new Decimal(1)};
     if(!player.display.explore) player.display.explore = {wh:"0wh/w'",trt:"0d",trp:"0.0%",bp:"0ψ", name:"练兵场 - 1",maxname:"家里蹲",en_b:"10000ψ", pr:"0.0%",};
     if(!player.display.explore.name) player.display.explore = {wh:"0wh/w'",trt:"0d",trp:"0.0%",bp:"0ψ", name:"练兵场 - 1",maxname:"家里蹲",en_b:"10000ψ", pr:"0.0%",};
@@ -248,6 +248,7 @@ function load_from_save(save) {
         }
         return value;
     });
+    complete_data();
 }
 const SAVE_KEY = 'Kuro_Family_Local_Save';
 function save_to_local(){
