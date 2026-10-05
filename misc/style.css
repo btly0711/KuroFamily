@@ -63,7 +63,7 @@ body{
 #main_content{
     left:18%;
     position:relative;
-    width:82%;
+    width:72%;
     height:100%;
 }
 #tab_change_buttons{
@@ -146,6 +146,17 @@ body{
 .settings_button:hover{
     transform:scale(1.1);
 }
+.simple_button{
+    border:2px solid white;
+    background-color: #313131;
+    text-align:center;
+    height:22px;
+    width:36px;
+    display:inline-block;
+}
+.simple_button:hover{
+    background-color: #656565;
+}
 .workhour_span{
     left:50px;
     width:200px;
@@ -206,6 +217,23 @@ body{
 }
 #get_member{
     background: linear-gradient(to bottom right, white,pink,red,pink,white);
-    left:32%;
+    left:42%;
     width:16%;
+}
+#explore_location_div{
+    width:400px;
+    height:120px;
+    text-align:center;
+    border: 2px solid white;
+}
+.blank_location{
+    background:linear-gradient(to right, brown,black,brown);
+}
+.gray_location{
+    background:linear-gradient(to right, black,gray,black);
+}
+.grass_location{
+    background:linear-gradient(to right, green,lime,lightgreen,lime,green);
+    color:brown;
+	-webkit-text-stroke: 0.5px brown;
 }

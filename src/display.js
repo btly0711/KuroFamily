@@ -1,6 +1,7 @@
 "use strict";
 
 import { player , REALM_DATA} from "./main.js";
+import { EXP_LOCATIONS , get_battle_passrate } from "./explore.js";
 import Decimal from "./break_eternity.js";
 
 
@@ -24,6 +25,9 @@ function renderGame(adt){
             break;
         case 'work':
             renderWork();
+            break;
+        case 'explore':
+            renderExplore();
             break;
         case 'settings':
             renderSettings();
@@ -63,6 +67,7 @@ function renderFamily(){
 function renderWork(){
     document.getElementById("workhour_workless").innerText = format_number(player.work.workless.mul(100).round()) + '%';
     document.getElementById("workhour_reproduce").innerText = format_number(player.work.reproduce.mul(100).round()) + '%';
+    document.getElementById("workhour_explore").innerText = format_number(player.work.explore.mul(100).round()) + '%';
 
     document.getElementById("reproduce_workhour").innerText = player.display.birt.wh;
     document.getElementById("basic_reproduce").innerText = player.display.birt.basic;
@@ -73,7 +78,25 @@ function renderWork(){
     else document.getElementById("1st_reproduce").innerText = "";
     document.getElementById("final_reproduce").innerText = format_number(player.family.birt.mul(player.time.spd))
 
-    console.log('work rended');
+
+}
+function renderExplore(){
+    //player.family.stats.wh.mul(player.work.explore)
+    //↑探索工时
+    document.getElementById("explore_workhour").innerText = player.display.explore.wh;
+    document.getElementById("training_time").innerText = player.display.explore.trt;
+    document.getElementById("training_power").innerText = player.display.explore.trp;
+    document.getElementById("explore_battle_power").innerText = player.display.explore.bb;
+
+
+    document.getElementById("explore_success_chance").innerText = player.display.explore.pr;
+    let p = player.explore.trp.mag;
+    if(p<0.5) document.getElementById("training_power").style = `color:rgb(255,${Math.floor(p*510)},${Math.floor(p*510)}`;
+    else document.getElementById("training_power").style = `color:rgb(${Math.floor(510-p*510)},255,${Math.floor(510-p*510)}`;
+    p = get_battle_passrate();
+    if(p<0.5) document.getElementById("explore_success_chance").style = `color:rgb(255,${Math.floor(p*510)},${Math.floor(p*510)}`;
+    else document.getElementById("explore_success_chance").style = `color:rgb(${Math.floor(510-p*510)},255,${Math.floor(510-p*510)}`;
+    
 
 }
 const formats = ["科学","标准","中文"];
@@ -100,6 +123,15 @@ function renderFamilyMembers(){
         chart_html += row;
     }
     chart.innerHTML = chart_html;
+}
+function renderExploreLocation(){
+    document.getElementById("explore_location").innerText = '[ '+player.display.explore.name+' ]';
+    document.getElementById("explore_enemy_power").innerText = player.display.explore.en_b;
+    document.getElementById("explore_max_location").innerText = '[ '+player.display.explore.maxname+' ]';
+    document.getElementById("explore_break_mul").innerText = format_number(player.explore.b_mul) + 'x';
+    document.getElementById("explore_success_reward").innerText = `${format_number(EXP_LOCATIONS[Math.max(0,player.explore.cur-1)][2])}x -> ${format_number(EXP_LOCATIONS[player.explore.cur][2])}x , ${(EXP_LOCATIONS[player.explore.cur][3]!=EXP_LOCATIONS[player.explore.cur-1][3])?'解锁新境界':''}`;
+    document.getElementById("explore_location_div").className = '';
+    document.getElementById("explore_location_div").classList.add(EXP_LOCATIONS[player.explore.cur][4])
 }
 
 function change_timedtb(realm,op,change){
@@ -151,9 +183,17 @@ function wh_dtb(worktype,change){
             if(player.work.workless.lt(change)) change = player.work.workless;
         }
         else if(player.work.reproduce.lt(change.mul(-1))) change = player.work.reproduce.mul(-1);
-        
         player.work.workless = player.work.workless.sub(change);
         player.work.reproduce = player.work.reproduce.add(change);
+    }
+    if(worktype==2){
+        if(change.gt(0)){
+            if(player.work.workless.lt(change)) change = player.work.workless;
+        }
+        else if(player.work.explore.lt(change.mul(-1))) change = player.work.explore.mul(-1);
+        player.work.workless = player.work.workless.sub(change);
+        player.work.explore = player.work.explore.add(change);
+        if(change.gt(0) || change.lt(0)) player.explore.trt = new Decimal(0);
     }
 }
 window.wh_dtb = wh_dtb;
@@ -172,9 +212,9 @@ function format_number(decimal){
     {
         if(decimal.mag<1e3){
             if(decimal.sub(decimal.floor()).abs().lte(0.00005)) return sig + decimal.mag.toFixed(0);
-            if(decimal.mag>100) return sig + decimal.mag.toFixed(2);
-            if(decimal.mag>10) return sig + decimal.mag.toFixed(3);
-            return sig + decimal.mag.toFixed(4);
+            if(decimal.mag>100) return sig + decimal.mag.toFixed(1);
+            if(decimal.mag>10) return sig + decimal.mag.toFixed(2);
+            return sig + decimal.mag.toFixed(3);
         }
         return sig + (Math.round(decimal.mag)).toLocaleString('en-US');
     }//不足1e6的数直接显示
@@ -301,4 +341,4 @@ function format_rate_with_spd(decimal){
 }
 
 
-export {renderGame, renderFamilyMembers,format_number,format_chance_time};
+export {renderGame, renderFamilyMembers,renderExploreLocation,format_number,format_chance_time,format_timedur,};

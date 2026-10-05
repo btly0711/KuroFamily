@@ -1,8 +1,9 @@
 "use strict";
 
-import {renderGame, renderFamilyMembers,format_number,format_chance_time} from "./display.js";
+import {renderGame, renderFamilyMembers,renderExploreLocation,format_number,format_chance_time} from "./display.js";
+import {update_explore, updateRealmcap} from "./explore.js";
 import Decimal from "./break_eternity.js";
-const GAME_VERSION = 'V0.06b';
+const GAME_VERSION = 'V0.07';
 let player ={
     time:{
         cur:new Decimal(0),//存储单位:分钟
@@ -33,6 +34,18 @@ let player ={
     work:{
         workless:new Decimal(1),//无业
         reproduce:new Decimal(0),//生育
+        explore: new Decimal(0),//探索
+    },
+    explore:{
+        wh:new Decimal(0),//探索工时
+        trt:new Decimal(0),//训练时间
+        trp:new Decimal(0),//训练效果
+        bp:new Decimal(0),//战力
+
+        prog:0,//进度(目前最高8)
+        cur:1,//目前查看的探索区域(最高prog+1)
+        b_mul:new Decimal(1),//突破乘数
+        //概率:现场计算
     },
     display:{
         tab:"family",//选项卡
@@ -42,8 +55,27 @@ let player ={
             basic:"0c/w'",
             sc1:"0c/w'",
             scn:0,
+        },
+        explore:{
+            wh:"0wh/w'",//探索工时
+            trt:"0d",//训练时间
+            trp:"0.0%",//训练效果
+            bp:"0ψ",//ψ长得像三叉戟，所以是战力单位
+
+            name:"练兵场 - 1",//目前在查看的项目名称
+            maxname:"家里蹲",//最高1通过地点
+            en_b:"10000ψ",//敌人战斗力
+            pr:"0.0%",//pass rate通过率(上述4个中唯一一个不懒更新的)
         }
     }
+}
+function complete_data(){
+    if(!player.work.explore) player.work.explore = new Decimal(0);
+    if(!player.explore ) player.explore = {wh:new Decimal(0),trt:new Decimal(0),trp:new Decimal(0),bp:new Decimal(0),prog:0,cur:1,b_mul:new Decimal(1)};
+    if(!player.explore.cur) player.explore = {wh:new Decimal(0),trt:new Decimal(0),trp:new Decimal(0),bp:new Decimal(0),prog:0,cur:1,b_mul:new Decimal(1)};
+    if(!player.display.explore) player.display.explore = {wh:"0wh/w'",trt:"0d",trp:"0.0%",bp:"0ψ", name:"练兵场 - 1",maxname:"家里蹲",en_b:"10000ψ", pr:"0.0%",};
+    if(!player.display.explore.name) player.display.explore = {wh:"0wh/w'",trt:"0d",trp:"0.0%",bp:"0ψ", name:"练兵场 - 1",maxname:"家里蹲",en_b:"10000ψ", pr:"0.0%",};
+    
 }
 const tickspeed = 50;
 function prepareGame(){
@@ -53,13 +85,15 @@ function prepareGame(){
     try{load_from_local()}
     catch(error) {console.error("加载本地存档时出错！");
         console.error(error);}
+    complete_data();//补全数据
     //上面加载数据
 
     document.getElementById(`${player.display.tab}_button`).classList.add("tab_button_active");
     document.getElementById(`${player.display.tab}_content`).style.display = 'block';
     //load tab display status
-
+    updateRealmcap();
     renderFamilyMembers();
+    renderExploreLocation();
     document.getElementById("cur_version").innerText = GAME_VERSION;
     document.getElementById("loading_screen").style.display='none';
     
@@ -75,6 +109,7 @@ function prepareGame(){
             sum_t = 0;
         }//
         lastTime = now;
+        if(dt>=1000) dt=1000;
         updateGame(dt / 1000);
         renderGame(adt / 10000); 
     },1000/tickspeed);
@@ -102,6 +137,7 @@ function updateGame(dt){
     player.time.cur = player.time.cur.add(player.time.spd.mul(dt));
     update_family(dt);
     update_work(dt);
+    update_explore(dt);
     player.time.save += dt;
     if(player.time.save >= 30) save_to_local();
 }
@@ -119,7 +155,7 @@ function update_family_rdata(){
             rt:new Decimal(60),
             ct:new Decimal(60),
         };
-        player.family.rdata[i].br = new Decimal(REALM_DATA[i][2]).mul(player.family.rdata[i].timedtb.ct.div(60).pow(0.8));
+        player.family.rdata[i].br = new Decimal(REALM_DATA[i][2]).mul(player.family.rdata[i].timedtb.ct.div(60).pow(0.8)).mul(player.explore.b_mul);//加入探索乘数
         player.family.rdata[i].dd = new Decimal(REALM_DATA[i][3]).mul(player.family.rdata[i].timedtb.rt.add(2).div(62).pow(-0.8));
         player.family.rdata[i].wk = new Decimal(REALM_DATA[i][4]).mul(player.family.rdata[i].timedtb.wk);//默认60h工作/d
         //以后这里会有乘数

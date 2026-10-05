@@ -36,6 +36,9 @@
                     <div id="work_button" class="tab_button" onclick="change_tab('work')">
                         分工
                     </div>
+                    <div id="explore_button" class="tab_button" onclick="change_tab('explore')">
+                        探索
+                    </div>
                     <div id="settings_button" class="tab_button" onclick="change_tab('settings')">
                         设置
                     </div>
@@ -61,7 +64,7 @@
 
                         </tbody>
                     </table>
-                    目前(V0.06)封顶境界:<span id="realm_cap" class="realm_basic2">万物级高等</span>
+                    目前封顶境界(随探索进度):<span id="realm_cap" class="realm_basic2">万物级高等</span>
                 </div>
                 <div id="work_content" style="display:none">
                     
@@ -69,7 +72,8 @@
 
                     <span style='color:cyan'>工时分配:</span><br>
                     <span style='color:yellow'>无业:</span><span class="workhour_span"><span id="workhour_workless">100%</span></span><br>
-                    <span style='color:lightgreen'>生育:</span>   <span class="workhour_span"><span onclick="wh_dtb(1,-20)">[- -]</span> <span onclick="wh_dtb(1,-2)">[-]</span> <span id="workhour_reproduce">0%</span><span onclick="wh_dtb(1,2)">[+]</span> <span onclick="wh_dtb(1,20)">[++]</span></span><br><br>
+                    <span style='color:lightgreen'>生育:</span>   <span class="workhour_span"><span onclick="wh_dtb(1,-20)">[- -]</span> <span onclick="wh_dtb(1,-2)">[-]</span> <span id="workhour_reproduce">0%</span><span onclick="wh_dtb(1,2)">[+]</span> <span onclick="wh_dtb(1,20)">[++]</span></span><br>
+                    <span style='color:plum'>探索:</span>   <span class="workhour_span"><span onclick="wh_dtb(2,-20)">[- -]</span> <span onclick="wh_dtb(2,-2)">[-]</span> <span id="workhour_explore">0%</span><span onclick="wh_dtb(2,2)">[+]</span> <span onclick="wh_dtb(2,20)">[++]</span></span><br><br>
 
                     <span style='color:lightgreen;font-weight:bold'>生育计划 (基础 1c/1920wh): <br>
                     
@@ -78,6 +82,22 @@
                     计算流速后 : <span id="final_reproduce"> 0 </span> c/s
                     
                     </span>
+                </div>
+                <div id="explore_content" style="display:none">
+                    探索工时 : <span id="explore_workhour" style="color:lightblue"></span><br>
+                    训练时间 : <span id="training_time"></span>(小队越强，需要训练越多)<br>
+                    训练效果 : <b><span id="training_power"></span></b></span><br>
+                    探索小队战力 : <b><span id="explore_battle_power" style="color:gold"></span></b><br><br>
+
+                    目前 <span id="explore_class">探索</span> 地点 : <b><span class="simple_button" onclick="location_change(-1)"> - </span> / <span class="simple_button" onclick="location_fight()" style="background-color:crimson">战斗</span> / <span class="simple_button" onclick="location_change(1)">+</span></b><br><br>
+                    <div id="explore_location_div">
+                        <b><span id="explore_location">练兵场 - 1</span></b><br><br>
+                        此处敌人战力 : <b><span id="explore_enemy_power"  style="color:gold">10000ψ</span></b><br>
+                        通过概率 : <b><span id="explore_success_chance">0.0%</span></b><br>
+                        通过奖励: 环境 <span id="explore_success_reward">0.0%</span>
+                    </div><br>
+                        
+                    <span style="color:lime">最高通过地点 : <span id="explore_max_location"> / </span> -> 环境加成 : <span id="explore_break_mul">1.00x</span></span>
                 </div>
                 <div id="settings_content" style="display:none">
                     <div id="format_switch"class="settings_button" onclick="switch_format()">
