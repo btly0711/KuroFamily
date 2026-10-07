@@ -44,6 +44,7 @@ function renderMain(adt){
     document.getElementById("time_spd").innerText = format_timedur(player.time.spd);
     document.getElementById("total_cat").innerText = format_number(player.family.stats.cnt)+ 'c';
     document.getElementById("total_workhour").innerText = format_number(player.family.stats.wh)+ 'wh/w\'';
+
 }
 function renderFamily(){
     let members = '';
@@ -83,7 +84,7 @@ function renderWork(){
 function renderExplore(){
     //player.family.stats.wh.mul(player.work.explore)
     //↑探索工时
-    document.getElementById("explore_workhour").innerText = player.display.explore.wh;
+    document.getElementById("explore_workhour").innerText = format_number(player.explore.wh) + 'wh/w\'';
     document.getElementById("training_time").innerText = player.display.explore.trt;
     document.getElementById("training_power").innerText = player.display.explore.trp;
     document.getElementById("explore_battle_power").innerText = player.display.explore.bb;
@@ -97,7 +98,17 @@ function renderExplore(){
     if(p<0.5) document.getElementById("explore_success_chance").style = `color:rgb(255,${Math.floor(p*510)},${Math.floor(p*510)}`;
     else document.getElementById("explore_success_chance").style = `color:rgb(${Math.floor(510-p*510)},255,${Math.floor(510-p*510)}`;
     
+    
+    document.getElementById("total_ore").innerText = format_number(player.resources.ore);
+    document.getElementById("time_flux").innerText = format_number(player.resources.ore.add(1).pow(0.2)) + 'x';
 
+    document.getElementById("total_herb").innerText = format_number(player.resources.herb);
+
+    let hpc = player.resources.herb.mul(1e4).div(player.family.stats.cnt.add(0.01));
+    //console.log(hpc);
+    //console.log(hpc.add(1).ln().pow(0.8).mul(10));
+    document.getElementById("herb_per_catpital").innerText = format_number(hpc) + ' / 10,000c';
+    document.getElementById("herb_bonus").innerText = format_number(hpc.add(1).ln().pow(0.8).mul(10)) + '%';
 }
 const formats = ["科学","标准","中文"];
 function renderSettings(){
@@ -125,11 +136,13 @@ function renderFamilyMembers(){
     chart.innerHTML = chart_html;
 }
 function renderExploreLocation(){
-    document.getElementById("explore_location").innerText = '[ '+player.display.explore.name+' ]';
-    document.getElementById("explore_enemy_power").innerText = player.display.explore.en_b;
-    document.getElementById("explore_max_location").innerText = '[ '+player.display.explore.maxname+' ]';
+    document.getElementById("explore_class").innerText = player.explore.cur>player.explore.prog?"开拓":"扫荡"
+    document.getElementById("explore_location").innerText = '[ '+EXP_LOCATIONS[player.explore.cur][0]+' ]';
+    document.getElementById("explore_enemy_power").innerText = format_number(EXP_LOCATIONS[player.explore.cur][1]) + 'ψ';
+    document.getElementById("explore_max_location").innerText = '[ '+EXP_LOCATIONS[player.explore.prog][0]+' ]';
     document.getElementById("explore_break_mul").innerText = format_number(player.explore.b_mul) + 'x';
-    document.getElementById("explore_success_reward").innerText = `${format_number(EXP_LOCATIONS[Math.max(0,player.explore.cur-1)][2])}x -> ${format_number(EXP_LOCATIONS[player.explore.cur][2])}x , ${(EXP_LOCATIONS[player.explore.cur][3]!=EXP_LOCATIONS[player.explore.cur-1][3])?'解锁新境界':''}`;
+    if(player.explore.cur>player.explore.prog) document.getElementById("explore_success_reward").innerText = `通过奖励 : 环境 ${format_number(EXP_LOCATIONS[Math.max(0,player.explore.cur-1)][2])}x -> ${format_number(EXP_LOCATIONS[player.explore.cur][2])}x , ${(EXP_LOCATIONS[player.explore.cur][3]!=EXP_LOCATIONS[player.explore.cur-1][3])?'解锁新境界':''}`;
+    else document.getElementById("explore_success_reward").innerText = `扫荡获取 ${format_number(EXP_LOCATIONS[player.explore.cur][5])} 灵矿${player.explore.cur>=5?`, ${format_number(EXP_LOCATIONS[player.explore.cur][6])} 灵药`:''}.`
     document.getElementById("explore_location_div").className = '';
     document.getElementById("explore_location_div").classList.add(EXP_LOCATIONS[player.explore.cur][4])
 }
@@ -192,8 +205,9 @@ function wh_dtb(worktype,change){
         }
         else if(player.work.explore.lt(change.mul(-1))) change = player.work.explore.mul(-1);
         player.work.workless = player.work.workless.sub(change);
+        if(change.lt(0)) player.explore.trt = player.explore.trt.mul(player.work.explore.add(change).div(player.work.explore));
         player.work.explore = player.work.explore.add(change);
-        if(change.gt(0) || change.lt(0)) player.explore.trt = new Decimal(0);
+        if(change.gt(0)) player.explore.trt = player.explore.trt.mul(player.work.explore.minus(change).div(player.work.explore));
     }
 }
 window.wh_dtb = wh_dtb;

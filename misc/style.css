@@ -237,3 +237,7 @@ body{
     color:brown;
 	-webkit-text-stroke: 0.5px brown;
 }
+.palace_location{
+    background:linear-gradient(to right,#383838,white,#555555,#383838,#555555,#383838,#555555,white,#383838);
+    color:lightgray;
+}
