@@ -29,6 +29,9 @@ function renderGame(adt){
         case 'explore':
             renderExplore();
             break;
+        case 'building':
+            renderBuilding();
+            break;
         case 'settings':
             renderSettings();
             break;
@@ -54,8 +57,13 @@ function renderFamily(){
         document.getElementById(`member_list_count_${i}`).innerText = format_number(player.family.cats[i]);
         //document.getElementById(`member_list_break_${i}`).innerText = '('+format_timedur(player.family.rdata[i].br.pow(-1)) + ')⁻¹';
         //document.getElementById(`member_list_death_${i}`).innerText = '('+format_timedur(player.family.rdata[i].dd.pow(-1)) + ')⁻¹';
-        document.getElementById(`member_list_ttlbreak_${i}`).innerText = format_rate_with_spd(player.family.rdata[i].br.mul(player.family.cats[i]));
-        document.getElementById(`member_list_ttldeath_${i}`).innerText = format_rate_with_spd(player.family.rdata[i].dd.mul(player.family.cats[i]));
+        let brate = player.family.rdata[i].br.mul(player.time.spd).div(50);
+        let drate = player.family.rdata[i].dd.mul(player.time.spd).div(50);
+        let br_m = brate.min(brate.div(brate.add(drate))).mul(50);
+        let dr_m = drate.min(drate.div(brate.add(drate))).mul(50);
+
+        document.getElementById(`member_list_ttlbreak_${i}`).innerText = format_number(br_m.mul(player.family.cats[i]));
+        document.getElementById(`member_list_ttldeath_${i}`).innerText = format_number(dr_m.mul(player.family.cats[i]));
         document.getElementById(`member_list_work_${i}`).innerText = format_number(player.family.rdata[i].wk) + '/c';
         document.getElementById(`member_list_ttlwork_${i}`).innerText = format_number(player.family.rdata[i].wk.mul(player.family.cats[i]));
 
@@ -69,6 +77,7 @@ function renderWork(){
     document.getElementById("workhour_workless").innerText = format_number(player.work.workless.mul(100).round()) + '%';
     document.getElementById("workhour_reproduce").innerText = format_number(player.work.reproduce.mul(100).round()) + '%';
     document.getElementById("workhour_explore").innerText = format_number(player.work.explore.mul(100).round()) + '%';
+    document.getElementById("workhour_building").innerText = format_number(player.work.build.mul(100).round()) + '%';
 
     document.getElementById("reproduce_workhour").innerText = player.display.birt.wh;
     document.getElementById("basic_reproduce").innerText = player.display.birt.basic;
@@ -100,7 +109,6 @@ function renderExplore(){
     
     
     document.getElementById("total_ore").innerText = format_number(player.resources.ore);
-    document.getElementById("time_flux").innerText = format_number(player.resources.ore.add(1).pow(0.2)) + 'x';
 
     document.getElementById("total_herb").innerText = format_number(player.resources.herb);
 
@@ -109,6 +117,21 @@ function renderExplore(){
     //console.log(hpc.add(1).ln().pow(0.8).mul(10));
     document.getElementById("herb_per_catpital").innerText = format_number(hpc) + ' / 10,000c';
     document.getElementById("herb_bonus").innerText = format_number(hpc.add(1).ln().pow(0.8).mul(10)) + '%';
+}
+const BUILDING_MAPS = {"none":"[无]","tda":"[乱时法阵]"}
+function renderBuilding(){
+    document.getElementById("building_workhour").innerText = format_number(player.build.wh) + 'wh/w\'';
+    document.getElementById("building_workhour_rt").innerText = format_number(player.build.wh.div(10800).mul(player.time.spd)) + 'wh/s';
+
+    document.getElementById("build_project").innerText = BUILDING_MAPS[player.build.wt.status];
+    if(player.build.wt.prog_max.lte(1)) document.getElementById("build_progress").innerText = '当前不在建设中'
+    else document.getElementById("build_progress").innerText = format_number(player.build.wt.progress) + ' / ' + format_number(player.build.wt.prog_max) + ' wh';
+    document.getElementById("build_prog_bar").style.width = Math.floor(player.build.wt.progress.div(player.build.wt.prog_max).mul(100).mag*100)/100 + '%';
+
+    document.getElementById("tda_level").innerText = format_number(player.build.tda.level);
+    document.getElementById("tda_upgrade_ore").innerText = format_number(player.build.tda.price) + ' 灵矿';
+    document.getElementById("tda_upgrade_wh").innerText = format_number(player.build.tda.price.mul(1e4).pow(1.2)) + ' wh';
+    document.getElementById("tda_effect").innerText = format_number(player.build.tda.effect) + 'x';
 }
 const formats = ["科学","标准","中文"];
 function renderSettings(){
@@ -209,6 +232,14 @@ function wh_dtb(worktype,change){
         player.work.explore = player.work.explore.add(change);
         if(change.gt(0)) player.explore.trt = player.explore.trt.mul(player.work.explore.minus(change).div(player.work.explore));
     }
+    if(worktype==3){
+        if(change.gt(0)){
+            if(player.work.workless.lt(change)) change = player.work.workless;
+        }
+        else if(player.work.build.lt(change.mul(-1))) change = player.work.build.mul(-1);
+        player.work.workless = player.work.workless.sub(change);
+        player.work.build = player.work.build.add(change);
+    }
 }
 window.wh_dtb = wh_dtb;
 function switch_format(){
@@ -219,9 +250,9 @@ window.switch_format = switch_format;
 
 function format_number(decimal){
     let sig = decimal.sign==-1?'-':'';
-    if(decimal.layer >= 2 || (decimal.layer == 1 && decimal.mag >= 308.254)){
-        return 'Infinity';//WIP:需要适配更大数字
-    }
+    // if(decimal.layer >= 2 || (decimal.layer == 1 && decimal.mag >= 308.254)){
+    //     return 'Infinity';//WIP:需要适配更大数字
+    // }
     if(decimal.layer==0 && decimal.mag<1e9)
     {
         if(decimal.mag<1e3){

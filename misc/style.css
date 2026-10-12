@@ -165,6 +165,26 @@ body{
     color:lightcyan;
     position:absolute;
 }
+#build_prog_div{
+    border:2px solid white;
+    text-align:center;
+    width:320px;
+    height:24px;
+    position:relative;
+}
+#build_prog_bar{
+    position:absolute;
+    left:0px;
+    width:0%;
+    height:24px;
+    background:linear-gradient(to right, salmon,pink,salmon,pink,salmon,pink,salmon);
+}
+#build_progress{
+    position:relative;
+    -webkit-text-stroke:0.8px rgb(114, 207, 250);
+    font-weight:bold;
+    z-index:1;
+}
 .member_list_header {
     border: 2px solid white;
     text-align: center;

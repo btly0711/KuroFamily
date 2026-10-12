@@ -39,6 +39,9 @@
                     <div id="explore_button" class="tab_button" onclick="change_tab('explore')">
                         探索
                     </div>
+                    <div id="building_button" class="tab_button" onclick="change_tab('building')">
+                        建设
+                    </div>
                     <div id="settings_button" class="tab_button" onclick="change_tab('settings')">
                         设置
                     </div>
@@ -73,7 +76,8 @@
                     <span style='color:cyan'>工时分配:</span><br>
                     <span style='color:yellow'>无业:</span><span class="workhour_span"><span id="workhour_workless">100%</span></span><br>
                     <span style='color:lightgreen'>生育:</span>   <span class="workhour_span"><span onclick="wh_dtb(1,-20)">[- -]</span> <span onclick="wh_dtb(1,-2)">[-]</span> <span id="workhour_reproduce">0%</span><span onclick="wh_dtb(1,2)">[+]</span> <span onclick="wh_dtb(1,20)">[++]</span></span><br>
-                    <span style='color:plum'>探索:</span>   <span class="workhour_span"><span onclick="wh_dtb(2,-20)">[- -]</span> <span onclick="wh_dtb(2,-2)">[-]</span> <span id="workhour_explore">0%</span><span onclick="wh_dtb(2,2)">[+]</span> <span onclick="wh_dtb(2,20)">[++]</span></span><br><br>
+                    <span style='color:plum'>探索:</span>   <span class="workhour_span"><span onclick="wh_dtb(2,-20)">[- -]</span> <span onclick="wh_dtb(2,-2)">[-]</span> <span id="workhour_explore">0%</span><span onclick="wh_dtb(2,2)">[+]</span> <span onclick="wh_dtb(2,20)">[++]</span></span><br>
+                    <span style='color:lightsalmon'>建筑:</span>   <span class="workhour_span"><span onclick="wh_dtb(3,-20)">[- -]</span> <span onclick="wh_dtb(3,-2)">[-]</span> <span id="workhour_building">0%</span><span onclick="wh_dtb(3,2)">[+]</span> <span onclick="wh_dtb(3,20)">[++]</span></span><br><br>
 
                     <span style='color:lightgreen;font-weight:bold'>生育计划 (基础 1c/1920wh): <br>
                     
@@ -84,7 +88,7 @@
                     </span>
                 </div>
                 <div id="explore_content" style="display:none">
-                    探索工时 : <span id="explore_workhour" style="color:lightblue"></span><br>
+                    探索工时 : <span id="explore_workhour" style="color:lightgoldenrodyellow"></span><br>
                     训练时间 : <span id="training_time"></span>(小队越强，需要训练越多)<br>
                     训练效果 : <b><span id="training_power"></span></b></span><br>
                     探索小队战力 : <b><span id="explore_battle_power" style="color:gold"></span></b><br><br>
@@ -100,10 +104,22 @@
                     <span style="color:lime">探索进度 : <span id="explore_max_location"> / </span> -> 环境突破加成 : <span id="explore_break_mul">1.00x</span></span><br><br>
                     
                     灵矿 : <span id="total_ore" style="color:gray">0</span><br>
-                    时速加成[WIP/下个版本修改] : <span id="time_flux" style="color:gray"></span><br>
                     <br>
                     灵药 : <span id="total_herb" style="color:limegreen">0</span><br>
                     药猫比 : <span id="herb_per_catpital" style="color:limegreen">0/10000c</span> -> 灵药突破加成 : <span id="herb_bonus" style="color:limegreen">0.00%</span><br>
+                </div>
+                <div id="building_content" style="display:none">
+                    建设工时 : <span id="building_workhour" style="color:lightsalmon">0wh/w'</span><br>
+                 -> 建设速度 : <span id="building_workhour_rt" style="color:lightsalmon">0wh/s</span>
+                    <br><br>
+                    当前建设项目 : <span id="build_project" style="color:lightsalmon">[无]</span><br>
+                    <div id="build_prog_div"> 
+                        <span id="build_progress">当前不在建设中</span>
+                        <span id="build_prog_bar"></span>
+                    </div>
+                    <br><br>
+                    <span style="color:rgb(203, 163, 255)">乱时法阵 Lv.<span id="tda_level">0</span></span> : <span class="simple_button" onclick="build_tda()">升级</span>需 <span id="tda_upgrade_ore" style="color:gray">1 灵矿</span>  ; <span id="tda_upgrade_wh" style="color:lightsalmon">10,000 wh</span> .<br>
+                    效果 : 时间流速 <span style="color:rgb(203, 163, 255)" id="tda_effect">x1.00</span>.
                 </div>
                 <div id="settings_content" style="display:none">
                     <div id="format_switch"class="settings_button" onclick="switch_format()">

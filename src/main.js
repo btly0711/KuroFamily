@@ -2,13 +2,30 @@
 
 import {renderGame, renderFamilyMembers,renderExploreLocation,format_number,format_chance_time} from "./display.js";
 import {update_explore, updateRealmcap} from "./explore.js";
+import {update_building} from "./building.js";
 import Decimal from "./break_eternity.js";
-const GAME_VERSION = 'V0.08';
+const GAME_VERSION = 'V0.09';
 let player ={
     time:{
         cur:new Decimal(0),//存储单位:分钟
         spd:new Decimal("300"),//分钟/s
         save:0,//自动保存计数器，30触发保存
+    },
+    display:{
+        tab:"family",//选项卡
+        format:0,//计数法
+        birt:{
+            wh:"0wh/w'",
+            basic:"0c/w'",
+            sc1:"0c/w'",
+            scn:0,
+        },
+        explore:{
+            trt:"0d",//训练时间
+            trp:"0.0%",//训练效果
+            bb:"0ψ",//ψ长得像三叉戟，所以是战力单位
+            pr:"0.0%",//pass rate通过率(上述4个中唯一一个不懒更新的)
+        }
     },
     family:{
         cats:[new Decimal(0)],
@@ -35,6 +52,7 @@ let player ={
         workless:new Decimal(1),//无业
         reproduce:new Decimal(0),//生育
         explore: new Decimal(0),//探索
+        build: new Decimal(0),//建筑
     },
     explore:{
         wh:new Decimal(0),//探索工时
@@ -47,40 +65,43 @@ let player ={
         b_mul:new Decimal(1),//突破乘数
         //概率:现场计算
     },
+    build:{
+        wh:new Decimal(1),//建筑工时
+        wt:{
+            status:'none',//正在建设何项目
+            progress:new Decimal(0),//建筑已投入工作量
+            prog_max:new Decimal(1),//建筑需要工作量
+        },
+        tda:{
+            level:new Decimal(1),//等级
+            price:new Decimal(1),//价格(灵矿)
+            effect:new Decimal(1),//效果(时速)
+        }
+//0待机1工作中//time distorting array@乱时法阵
+    },
     resources:{
         ore:new Decimal(0),
         herb:new Decimal(0),
     },
-    display:{
-        tab:"family",//选项卡
-        format:0,//计数法
-        birt:{
-            wh:"0wh/w'",
-            basic:"0c/w'",
-            sc1:"0c/w'",
-            scn:0,
-        },
-        explore:{
-            trt:"0d",//训练时间
-            trp:"0.0%",//训练效果
-            bb:"0ψ",//ψ长得像三叉戟，所以是战力单位
-            pr:"0.0%",//pass rate通过率(上述4个中唯一一个不懒更新的)
-        }
-    }
 }
 function complete_data(){
+    //0.07↓
     if(!player.work.explore) player.work.explore = new Decimal(0);
     if(!player.explore) player.explore = {wh:new Decimal(0),trt:new Decimal(0),trp:new Decimal(0),bp:new Decimal(0),prog:0,cur:1,b_mul:new Decimal(1)};
     if(!player.explore.cur) player.explore = {wh:new Decimal(0),trt:new Decimal(0),trp:new Decimal(0),bp:new Decimal(0),prog:0,cur:1,b_mul:new Decimal(1)};
     if(!player.display.explore) player.display.explore = {trt:"0d",trp:"0.0%",bb:"0ψ",pr:"0.0%",};
-    
+    //0.08↓
     if(!player.resources) player.resources = {ore:new Decimal(0),herb:new Decimal(0),}
+    //0.09↓
+    if(!player.work.build) player.work.build = new Decimal(0);
+    if(!player.build) player.build = {wh:new Decimal(1),};
+    if(!player.build.wt) player.build.wt = {status:'none',progress:new Decimal(0),prog_max:new Decimal(1),};
+    if(!player.build.tda) player.build.tda = {level:new Decimal(0),price:new Decimal(1),effect:new Decimal(1)};
     
 }
 const tickspeed = 50;
 function prepareGame(){
     //load everything
-    //WIP:load player from local
     //if illegal reset
     try{load_from_local()}
     catch(error) {console.error("加载本地存档时出错！");
@@ -129,16 +150,20 @@ const REALM_DATA = [
     ["潮汐级巅峰",'basic3',1e-9,1e-7,40,8],
 
 ]//等级名，颜色，突破率，死亡率，工时，境界编号
+function update_game_spd(){
+    player.time.spd = (new Decimal(300)).mul(player.build.tda.effect);
+    //player.time.spd = player.time.spd.mul(1.03);
+}
 
 function updateGame(dt){
-
     //dt:现实中实际经过秒数
     //一切计算更新
     player.time.cur = player.time.cur.add(player.time.spd.mul(dt));
-    player.time.spd = (new Decimal(300)).mul(player.resources.ore.add(1).pow(0.2));
+    update_game_spd();
     update_family(dt);
     update_work(dt);
     update_explore(dt);
+    update_building(dt);
     player.time.save += dt;
     if(player.time.save >= 30) save_to_local();
 }
@@ -160,7 +185,9 @@ function update_family_rdata(){
         player.family.rdata[i].br = player.family.rdata[i].br.mul(player.resources.herb.mul(1e4).div(player.family.stats.cnt.add(0.01)).add(1).ln().pow(0.8).mul(0.1).add(1));//灵药乘数
         player.family.rdata[i].dd = new Decimal(REALM_DATA[i][3]).mul(player.family.rdata[i].timedtb.rt.add(2).div(62).pow(-0.8));
         player.family.rdata[i].wk = new Decimal(REALM_DATA[i][4]).mul(player.family.rdata[i].timedtb.wk);//默认60h工作/d
+
         //以后这里会有乘数
+        //player.family.rdata[i].wk = player.family.rdata[i].wk.div(player.family.rdata[i].dd.mul(player.time.spd).add(1));
         wh_n = wh_n.add(player.family.rdata[i].wk.mul(player.family.cats[i]));
         cnt_n = cnt_n.add(player.family.cats[i])
     }
@@ -168,13 +195,17 @@ function update_family_rdata(){
     player.family.stats.cnt = cnt_n;
 
 }
+let p_cats = [];
+let brate,drate,bf,df;
 function calculate_family_bd(gt){//gametime passed
     //console.log(gt);
+    for(let i=0;i<=player.family.maxrealm+1;i+=1) p_cats[i]=player.family.cats[i];
     for(let i=player.family.maxrealm;i>=0;i-=1){
-        let brate = player.family.rdata[i].br.mul(gt);
-        if(brate.gt(1)) brate = new Decimal(1);
-        brate = brate.mul(player.family.cats[i]);
-        let bf =brate.floor();
+        brate = player.family.rdata[i].br.mul(gt);
+        drate = player.family.rdata[i].dd.mul(gt);
+        if(brate.gt(brate.div(brate.add(drate)))) brate = brate.div(brate.add(drate));
+        brate = brate.mul(p_cats[i]);
+        bf =brate.floor();
         if(brate.sub(bf).gt(Math.random())) brate=bf.add(1);
         else brate = bf;
         //突破
@@ -190,10 +221,11 @@ function calculate_family_bd(gt){//gametime passed
         }
     }//突破计算
     for(let i=player.family.maxrealm;i>=0;i-=1){
-        let drate = player.family.rdata[i].dd.mul(gt);
-        if(drate.gt(1)) drate = new Decimal(1);
-        drate = drate.mul(player.family.cats[i]);
-        let df =drate.floor();
+        brate = player.family.rdata[i].br.mul(gt);
+        drate = player.family.rdata[i].dd.mul(gt);
+        if(drate.gt(drate.div(brate.add(drate)))) drate = drate.div(brate.add(drate));
+        drate = drate.mul(p_cats[i]);
+        df =drate.floor();
         if(drate.sub(df).gt(Math.random())) drate=df.add(1);
         else drate = df;
         //死亡
