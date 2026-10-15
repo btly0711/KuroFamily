@@ -17,8 +17,12 @@ const EXP_LOCATIONS = [
 ['燕岗近郊 - 1',new Decimal(6e7),new Decimal(1.75),6,"grass_location",new Decimal(14300),new Decimal(136)],
 ['燕岗近郊 - 2',new Decimal(16e7),new Decimal(1.88),6,"grass_location",new Decimal(42100),new Decimal(440)],
 ['燕岗近郊 - 3',new Decimal(42e7),new Decimal(2.05),6,"grass_location",new Decimal(12.2e4),new Decimal(1400)],
-['燕岗近郊 - 4',new Decimal(999999999),new Decimal(2.25),7,"grass_location",new Decimal(31.6e4),new Decimal(3980)],
-['地宫 - 1',new Decimal(9.223372036854775807e18),new Decimal(2.50),7,"palace_location",new Decimal(4280),new Decimal(36)],
+['燕岗近郊 - 4',new Decimal(999999999),new Decimal(2.24),7,"grass_location",new Decimal(31.6e4),new Decimal(3980)],
+['地宫 - 1',new Decimal(2.7e9),new Decimal(2.44),7,"palace_location",new Decimal(94.3e4),new Decimal(13000)],
+['地宫 - 2',new Decimal(7.2e9),new Decimal(2.65),7,"palace_location",new Decimal(277e4),new Decimal(4.25e4)],
+['地宫 - 3',new Decimal(18e9),new Decimal(2.87),7,"palace_location",new Decimal(760e4),new Decimal(12.8e4)],
+['地宫 - 4',new Decimal(48e9),new Decimal(3.10),8,"palace_location",new Decimal(2235e4),new Decimal(41.4e4)],
+['地宫核心 - 1',new Decimal(3.402823669e38),new Decimal(3.35),8,"palace_core_location",new Decimal(4280),new Decimal(36)],
 ]
 //地点名,需求战力,环境乘数,解锁新境界,背景名,灵矿,灵药
 /*

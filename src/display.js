@@ -45,8 +45,13 @@ function renderMain(adt){
 
     document.getElementById("time_cur").innerText = format_timept(player.time.cur);
     document.getElementById("time_spd").innerText = format_timedur(player.time.spd);
+
+
     document.getElementById("total_cat").innerText = format_number(player.family.stats.cnt)+ 'c';
     document.getElementById("total_workhour").innerText = format_number(player.family.stats.wh)+ 'wh/w\'';
+    document.getElementById("total_ore").innerText = format_number(player.resources.ore);
+    document.getElementById("total_herb").innerText = format_number(player.resources.herb);
+    document.getElementById("total_bp").innerText = player.display.explore.bb;
 
 }
 function renderFamily(){
@@ -108,9 +113,8 @@ function renderExplore(){
     else document.getElementById("explore_success_chance").style = `color:rgb(${Math.floor(510-p*510)},255,${Math.floor(510-p*510)}`;
     
     
-    document.getElementById("total_ore").innerText = format_number(player.resources.ore);
 
-    document.getElementById("total_herb").innerText = format_number(player.resources.herb);
+    document.getElementById("explore_herb").innerText = format_number(player.resources.herb);
 
     let hpc = player.resources.herb.mul(1e4).div(player.family.stats.cnt.add(0.01));
     //console.log(hpc);

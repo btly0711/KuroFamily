@@ -24,10 +24,11 @@
         <div id="global_content">
             <div id="left_row_content">
                 <div id="overall_satistics">
+                    纳可纪元<br>
                     <span id="time_cur">0纪0年0日000:00</span><br>
                     (流速 <span id="time_spd">10h</span>/s)<br><br>
-                    总喵口 : <span id="total_cat"style="color:pink">0c</span><br>
-                    总工时 : <span id="total_workhour" style="color:lightblue">0wh/w'</span><br><br>
+                    <span id="tps_monitor">TPS:50.0(20.00)</span><br>
+                    自动保存:<span id="autosave_monitor">0.00</span>s / 30s
                 </div>
                 <div id="tab_change_buttons">
                     <div id="family_button" class="tab_button" onclick="change_tab('family')">
@@ -103,14 +104,11 @@
                         
                     <span style="color:lime">探索进度 : <span id="explore_max_location"> / </span> -> 环境突破加成 : <span id="explore_break_mul">1.00x</span></span><br><br>
                     
-                    灵矿 : <span id="total_ore" style="color:gray">0</span><br>
-                    <br>
-                    灵药 : <span id="total_herb" style="color:limegreen">0</span><br>
+                    灵药 : <span id="explore_herb" style="color:limegreen">0</span><br>
                     药猫比 : <span id="herb_per_catpital" style="color:limegreen">0/10000c</span> -> 灵药突破加成 : <span id="herb_bonus" style="color:limegreen">0.00%</span><br>
                 </div>
                 <div id="building_content" style="display:none">
-                    建设工时 : <span id="building_workhour" style="color:lightsalmon">0wh/w'</span><br>
-                 -> 建设速度 : <span id="building_workhour_rt" style="color:lightsalmon">0wh/s</span>
+                    建设工时 : <span id="building_workhour" style="color:lightsalmon">0wh/w'</span> -> 建设速度 : <span id="building_workhour_rt" style="color:lightsalmon">0wh/s</span>
                     <br><br>
                     当前建设项目 : <span id="build_project" style="color:lightsalmon">[无]</span><br>
                     <div id="build_prog_div"> 
@@ -118,8 +116,9 @@
                         <span id="build_prog_bar"></span>
                     </div>
                     <br><br>
-                    <span style="color:rgb(203, 163, 255)">乱时法阵 Lv.<span id="tda_level">0</span></span> : <span class="simple_button" onclick="build_tda()">升级</span>需 <span id="tda_upgrade_ore" style="color:gray">1 灵矿</span>  ; <span id="tda_upgrade_wh" style="color:lightsalmon">10,000 wh</span> .<br>
-                    效果 : 时间流速 <span style="color:rgb(203, 163, 255)" id="tda_effect">x1.00</span>.
+                    <div id="tda_div">
+                    <img src="image/build_tda.png"><span style="color:rgb(203, 163, 255)"> 乱时法阵 Lv.<span id="tda_level">0</span></span>  : 时间流速 <span style="color:rgb(203, 163, 255)" id="tda_effect">x1.00</span> . <span class="longer_button" onclick="build_tda()">升级 : <span id="tda_upgrade_ore" style="color:gray">1 灵矿</span>  ; <span id="tda_upgrade_wh" style="color:lightsalmon">10,000 wh</span> </span> </div>
+                    
                 </div>
                 <div id="settings_content" style="display:none">
                     <div id="format_switch"class="settings_button" onclick="switch_format()">
@@ -148,9 +147,12 @@
                     </div>
                 </div>
             </div>
-            <div id="tps_autosave">
-                <span id="tps_monitor">TPS:50.0(20.00)</span><br>
-                自动保存:<span id="autosave_monitor">0.00</span>s / 30s
+            <div id="right_row_content">
+                    &nbsp; <img src="image/res_cat.png"> 喵口 : <span id="total_cat" style='color:pink'>0c</span><br>
+                    &nbsp; <img src="image/res_wh.png"> 工时 : <span id="total_workhour" style="color:lightblue">0wh/w'</span><br>
+                    &nbsp; <img src="image/res_ore.png"> 灵矿 : <span id="total_ore" style="color:gray">0</span><br>
+                    &nbsp; <img src="image/res_herb.png"> 灵药 : <span id="total_herb" style="color:limegreen">0</span><br>
+                    &nbsp; <img src="image/res_bp.png"> 战力 : <b><span id="total_bp" style="color:gold"></span></b>
             </div>
         </div>
     </body>

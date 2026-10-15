@@ -4,7 +4,7 @@ import {renderGame, renderFamilyMembers,renderExploreLocation,format_number,form
 import {update_explore, updateRealmcap} from "./explore.js";
 import {update_building} from "./building.js";
 import Decimal from "./break_eternity.js";
-const GAME_VERSION = 'V0.09';
+const GAME_VERSION = 'V0.10';
 let player ={
     time:{
         cur:new Decimal(0),//存储单位:分钟
@@ -146,7 +146,7 @@ const REALM_DATA = [
     ["万物级高等",'basic2',6e-7,1e-6,2,4],
     ["万物级巅峰",'basic2',3e-7,1e-6,4,5],
     ["潮汐级初等",'basic3',4e-8,1e-7,10,6],
-    ["潮汐级高等",'basic3',12e-9,1e-7,20,7],
+    ["潮汐级高等",'basic3',1e-8,1e-7,20,7],
     ["潮汐级巅峰",'basic3',1e-9,1e-7,40,8],
 
 ]//等级名，颜色，突破率，死亡率，工时，境界编号
