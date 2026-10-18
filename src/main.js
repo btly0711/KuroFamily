@@ -5,7 +5,7 @@ import {update_explore, updateRealmcap} from "./explore.js";
 import {update_building} from "./building.js";
 import {LoadAchievement,getAchievement} from "./achievement.js";
 import Decimal from "./break_eternity.js";
-const GAME_VERSION = 'V0.11';
+const GAME_VERSION = 'V0.11a';
 let player ={
     time:{
         cur:new Decimal(0),//存储单位:分钟
@@ -248,7 +248,7 @@ function calculate_family_bd(gt){//gametime passed
                 player.family.maxrealm += 1;//扩展境界最大值
                 player.family.cats[i+1] = brate;
                 renderFamilyMembers();
-                let MR = player.familt.maxrealm;
+                let MR = player.family.maxrealm;
                 if(MR==3) getAchievement(5);
                 if(MR==4) getAchievement(6);
                 if(MR==5) getAchievement(11);
