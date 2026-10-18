@@ -1,7 +1,9 @@
 "use strict";
 
 import { player , REALM_DATA} from "./main.js";
-import { EXP_LOCATIONS , get_battle_passrate } from "./explore.js";
+import { renderBuilding } from "./building.js";
+import { renderAchievement ,getAchievement} from "./achievement.js";
+import { EXP_LOCATIONS , get_battle_passrate , renderExplore} from "./explore.js";
 import Decimal from "./break_eternity.js";
 
 
@@ -31,6 +33,9 @@ function renderGame(adt){
             break;
         case 'building':
             renderBuilding();
+            break;
+        case 'achievement':
+            renderAchievement();
             break;
         case 'settings':
             renderSettings();
@@ -95,48 +100,6 @@ function renderWork(){
 
 
 }
-function renderExplore(){
-    //player.family.stats.wh.mul(player.work.explore)
-    //↑探索工时
-    document.getElementById("explore_workhour").innerText = format_number(player.explore.wh) + 'wh/w\'';
-    document.getElementById("training_time").innerText = player.display.explore.trt;
-    document.getElementById("training_power").innerText = player.display.explore.trp;
-    document.getElementById("explore_battle_power").innerText = player.display.explore.bb;
-
-
-    document.getElementById("explore_success_chance").innerText = player.display.explore.pr;
-    let p = player.explore.trp.mag;
-    if(p<0.5) document.getElementById("training_power").style = `color:rgb(255,${Math.floor(p*510)},${Math.floor(p*510)}`;
-    else document.getElementById("training_power").style = `color:rgb(${Math.floor(510-p*510)},255,${Math.floor(510-p*510)}`;
-    p = get_battle_passrate();
-    if(p<0.5) document.getElementById("explore_success_chance").style = `color:rgb(255,${Math.floor(p*510)},${Math.floor(p*510)}`;
-    else document.getElementById("explore_success_chance").style = `color:rgb(${Math.floor(510-p*510)},255,${Math.floor(510-p*510)}`;
-    
-    
-
-    document.getElementById("explore_herb").innerText = format_number(player.resources.herb);
-
-    let hpc = player.resources.herb.mul(1e4).div(player.family.stats.cnt.add(0.01));
-    //console.log(hpc);
-    //console.log(hpc.add(1).ln().pow(0.8).mul(10));
-    document.getElementById("herb_per_catpital").innerText = format_number(hpc) + ' / 10,000c';
-    document.getElementById("herb_bonus").innerText = format_number(hpc.add(1).ln().pow(0.8).mul(10)) + '%';
-}
-const BUILDING_MAPS = {"none":"[无]","tda":"[乱时法阵]"}
-function renderBuilding(){
-    document.getElementById("building_workhour").innerText = format_number(player.build.wh) + 'wh/w\'';
-    document.getElementById("building_workhour_rt").innerText = format_number(player.build.wh.div(10800).mul(player.time.spd)) + 'wh/s';
-
-    document.getElementById("build_project").innerText = BUILDING_MAPS[player.build.wt.status];
-    if(player.build.wt.prog_max.lte(1)) document.getElementById("build_progress").innerText = '当前不在建设中'
-    else document.getElementById("build_progress").innerText = format_number(player.build.wt.progress) + ' / ' + format_number(player.build.wt.prog_max) + ' wh';
-    document.getElementById("build_prog_bar").style.width = Math.floor(player.build.wt.progress.div(player.build.wt.prog_max).mul(100).mag*100)/100 + '%';
-
-    document.getElementById("tda_level").innerText = format_number(player.build.tda.level);
-    document.getElementById("tda_upgrade_ore").innerText = format_number(player.build.tda.price) + ' 灵矿';
-    document.getElementById("tda_upgrade_wh").innerText = format_number(player.build.tda.price.mul(1e4).pow(1.2)) + ' wh';
-    document.getElementById("tda_effect").innerText = format_number(player.build.tda.effect) + 'x';
-}
 const formats = ["科学","标准","中文"];
 function renderSettings(){
     //
@@ -175,7 +138,7 @@ function renderExploreLocation(){
 }
 
 function change_timedtb(realm,op,change){
-    console.log(player.family);
+    //console.log(player.family);
     if(op==1){
         if(change>0){
             if(player.family.rdata[realm].timedtb.wk.gte(change)){
@@ -214,6 +177,9 @@ function change_timedtb(realm,op,change){
     
         //member_list_time_brate_i
         //member_list_time_drate_i
+    if(player.family.rdata[realm].timedtb.wk.lte(0)) getAchievement(2);
+    if(player.family.rdata[realm].timedtb.rt.lte(0)) getAchievement(3);
+    if(player.family.rdata[realm].timedtb.ct.lte(0)) getAchievement(7);
 }
 window.change_timedtb = change_timedtb;
 function wh_dtb(worktype,change){
@@ -244,6 +210,9 @@ function wh_dtb(worktype,change){
         player.work.workless = player.work.workless.sub(change);
         player.work.build = player.work.build.add(change);
     }
+    if(player.work.reproduce.gt(0)) getAchievement(4);
+    if(player.work.explore.gt(0)) getAchievement(8);
+    if(player.work.build.gt(0)) getAchievement(13);
 }
 window.wh_dtb = wh_dtb;
 function switch_format(){
@@ -385,9 +354,5 @@ function format_chance_time(decimal){
     if(decimal.lte(0)) return '0';
     return '('+format_timedur(decimal.pow(-1)) +')⁻¹';
 }
-function format_rate_with_spd(decimal){
-    return format_number(decimal.mul(player.time.spd));
-}
-
 
 export {renderGame, renderFamilyMembers,renderExploreLocation,format_number,format_chance_time,format_timedur,};

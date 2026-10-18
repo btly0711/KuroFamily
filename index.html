@@ -22,6 +22,7 @@
             (如果在这个界面太久,可能代表存在严重问题!)
         </div>
         <div id="global_content">
+            <div id="achievement-toast-container"></div>
             <div id="left_row_content">
                 <div id="overall_satistics">
                     纳可纪元<br>
@@ -42,6 +43,9 @@
                     </div>
                     <div id="building_button" class="tab_button" onclick="change_tab('building')">
                         建设
+                    </div>
+                    <div id="achievement_button" class="tab_button" onclick="change_tab('achievement')">
+                        成就
                     </div>
                     <div id="settings_button" class="tab_button" onclick="change_tab('settings')">
                         设置
@@ -119,6 +123,12 @@
                     <div id="tda_div">
                     <img src="image/build_tda.png"><span style="color:rgb(203, 163, 255)"> 乱时法阵 Lv.<span id="tda_level">0</span></span>  : 时间流速 <span style="color:rgb(203, 163, 255)" id="tda_effect">x1.00</span> . <span class="longer_button" onclick="build_tda()">升级 : <span id="tda_upgrade_ore" style="color:gray">1 灵矿</span>  ; <span id="tda_upgrade_wh" style="color:lightsalmon">10,000 wh</span> </span> </div>
                     
+                </div>
+                <div id="achievement_content" style="display:none">
+                    目前得到了<span style="color:aqua" id="achi_num">0</span>个成就，全局工时*<span style="color:aqua" id="achi_bonus">1.00</span>.<br>
+                    <div id="achievement_table">
+
+                    </div>
                 </div>
                 <div id="settings_content" style="display:none">
                     <div id="format_switch"class="settings_button" onclick="switch_format()">

@@ -1,9 +1,25 @@
 "use strict";
 
 import { player ,REALM_DATA} from "./main.js";
-import { format_timedur, format_number , renderExploreLocation} from "./display.js";
+import {format_number} from "./display.js";
 import Decimal from "./break_eternity.js";
+import { getAchievement } from "./achievement.js";
 
+const BUILDING_MAPS = {"none":"[无]","tda":"[乱时法阵]"}
+function renderBuilding(){
+    document.getElementById("building_workhour").innerText = format_number(player.build.wh) + 'wh/w\'';
+    document.getElementById("building_workhour_rt").innerText = format_number(player.build.wh.div(10800).mul(player.time.spd)) + 'wh/s';
+
+    document.getElementById("build_project").innerText = BUILDING_MAPS[player.build.wt.status];
+    if(player.build.wt.prog_max.lte(1)) document.getElementById("build_progress").innerText = '当前不在建设中'
+    else document.getElementById("build_progress").innerText = format_number(player.build.wt.progress) + ' / ' + format_number(player.build.wt.prog_max) + ' wh';
+    document.getElementById("build_prog_bar").style.width = Math.floor(player.build.wt.progress.div(player.build.wt.prog_max).mul(100).mag*100)/100 + '%';
+
+    document.getElementById("tda_level").innerText = format_number(player.build.tda.level);
+    document.getElementById("tda_upgrade_ore").innerText = format_number(player.build.tda.price) + ' 灵矿';
+    document.getElementById("tda_upgrade_wh").innerText = format_number(player.build.tda.price.mul(1e4).pow(1.2)) + ' wh';
+    document.getElementById("tda_effect").innerText = format_number(player.build.tda.effect) + 'x';
+}
 function update_building(dt){
     player.build.wh = player.family.stats.wh.mul(player.work.build);
 
@@ -18,6 +34,8 @@ function update_building(dt){
             player.build.tda.price = (new Decimal(5)).pow(player.build.tda.level);//计算价格
 
             player.build.tda.effect = (new Decimal(1.5)).pow(player.build.tda.level);//计算效果
+            if(player.build.tda.level.gte(1)) getAchievement(14);
+            if(player.build.tda.level.gte(13)) getAchievement(20);
         }
         player.build.wt.progress = new Decimal(0);
         player.build.wt.prog_max = new Decimal(1);
@@ -37,4 +55,4 @@ function build_tda(){
 }
 window.build_tda = build_tda;
 
-export {update_building}
+export {update_building , renderBuilding}

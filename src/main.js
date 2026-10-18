@@ -3,8 +3,9 @@
 import {renderGame, renderFamilyMembers,renderExploreLocation,format_number,format_chance_time} from "./display.js";
 import {update_explore, updateRealmcap} from "./explore.js";
 import {update_building} from "./building.js";
+import {LoadAchievement,getAchievement} from "./achievement.js";
 import Decimal from "./break_eternity.js";
-const GAME_VERSION = 'V0.10';
+const GAME_VERSION = 'V0.11';
 let player ={
     time:{
         cur:new Decimal(0),//存储单位:分钟
@@ -79,6 +80,10 @@ let player ={
         }
 //0待机1工作中//time distorting array@乱时法阵
     },
+    achievement:{
+        total:0,
+        list:{},
+    },
     resources:{
         ore:new Decimal(0),
         herb:new Decimal(0),
@@ -97,7 +102,30 @@ function complete_data(){
     if(!player.build) player.build = {wh:new Decimal(1),};
     if(!player.build.wt) player.build.wt = {status:'none',progress:new Decimal(0),prog_max:new Decimal(1),};
     if(!player.build.tda) player.build.tda = {level:new Decimal(0),price:new Decimal(1),effect:new Decimal(1)};
-    
+    //0.11↓
+    if(!player.achievement){
+        console.log("achievement reloaded");
+        player.achievement = {total:0,list:{}};
+    }
+}//最多同时兼容10个版本
+function complete_achievements(){
+    //0.11↓
+    let MR=player.family.maxrealm;
+    if(MR>=3) getAchievement(5);
+    if(MR>=4) getAchievement(6);
+    if(MR>=5) getAchievement(11);
+    if(MR>=6) getAchievement(16);
+    if(MR>=7) getAchievement(18);
+    if(MR>=8) getAchievement(19);
+    let EP=player.explore.prog;
+    if(EP>=1) getAchievement(9);
+    if(EP>=4) getAchievement(10);
+    if(EP>=12) getAchievement(17);
+
+    if(player.build.tda.level.gte(1)) getAchievement(14);
+    if(player.build.tda.level.gte(13)) getAchievement(20);
+
+    if(player.resources.herb.gt(0)) getAchievement(15);
 }
 const tickspeed = 50;
 function prepareGame(){
@@ -115,6 +143,10 @@ function prepareGame(){
     updateRealmcap();
     renderFamilyMembers();
     renderExploreLocation();
+    LoadAchievement();
+
+    complete_achievements();//补全成就
+    //load something not loaded on [render]
     document.getElementById("cur_version").innerText = GAME_VERSION;
     document.getElementById("loading_screen").style.display='none';
     
@@ -158,8 +190,9 @@ function update_game_spd(){
 function updateGame(dt){
     //dt:现实中实际经过秒数
     //一切计算更新
-    player.time.cur = player.time.cur.add(player.time.spd.mul(dt));
     update_game_spd();
+    player.time.cur = player.time.cur.add(player.time.spd.mul(dt));
+    if(player.time.cur.gte(5.4e8))  getAchievement(21);
     update_family(dt);
     update_work(dt);
     update_explore(dt);
@@ -191,7 +224,7 @@ function update_family_rdata(){
         wh_n = wh_n.add(player.family.rdata[i].wk.mul(player.family.cats[i]));
         cnt_n = cnt_n.add(player.family.cats[i])
     }
-    player.family.stats.wh = wh_n;
+    player.family.stats.wh = wh_n.mul((new Decimal(1.01)).pow(player.achievement.total));//成就加成
     player.family.stats.cnt = cnt_n;
 
 }
@@ -215,6 +248,13 @@ function calculate_family_bd(gt){//gametime passed
                 player.family.maxrealm += 1;//扩展境界最大值
                 player.family.cats[i+1] = brate;
                 renderFamilyMembers();
+                let MR = player.familt.maxrealm;
+                if(MR==3) getAchievement(5);
+                if(MR==4) getAchievement(6);
+                if(MR==5) getAchievement(11);
+                if(MR==6) getAchievement(16);
+                if(MR==7) getAchievement(18);
+                if(MR==8) getAchievement(19);
             }
             else player.family.cats[i+1] = player.family.cats[i+1].add(brate);
             player.family.cats[i] = player.family.cats[i].sub(brate);
@@ -254,12 +294,14 @@ function update_work(){
         reproduce_workhour = reproduce_workhour.mul(60).pow(0.6).div(60);
         player.display.birt.scn=1;
         player.display.birt.sc1 = format_chance_time(reproduce_workhour);
+        getAchievement(12);
     }// 1p/h一重软上限
     else player.display.birt.sc1 = "";
     player.family.birt = reproduce_workhour;// p/m单位
 }
 function get_member(){
     player.family.cats[0]=player.family.cats[0].add(1);
+    getAchievement(1);
 }
 window.get_member = get_member;
 function get_save_string() {
@@ -355,6 +397,9 @@ document.getElementById("load-file-input").addEventListener("change", (e) => {
         }
     };
     reader.readAsText(file);
+
+    save_to_local();
+    location.reload();
 });
 
 export {player,REALM_DATA};

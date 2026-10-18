@@ -2,6 +2,7 @@
 
 import { player ,REALM_DATA} from "./main.js";
 import { format_timedur, format_number , renderExploreLocation} from "./display.js";
+import { getAchievement } from "./achievement.js";
 import Decimal from "./break_eternity.js";
 
 const EXP_LOCATIONS = [
@@ -59,7 +60,7 @@ function update_explore(dt){
     player.display.explore.pr = format_number(get_battle_passrate().mul(100)) + '%';
 }
 function location_change(op){
-    console.log(player.explore);
+    //console.log(player.explore);
     if(op==-1 && player.explore.cur >= 2){
         player.explore.cur -= 1;
     }
@@ -78,14 +79,19 @@ function location_fight(){
             updateRealmcap();
             renderExploreLocation();
             //探索开拓
+            let EP=player.explore.prog;
+            if(EP==1) getAchievement(9);
+            if(EP==4) getAchievement(10);
+            if(EP==12) getAchievement(17);
         }
         else{
             //扫荡(0.08)
             player.resources.ore = player.resources.ore.add(EXP_LOCATIONS[player.explore.cur][5]);
             player.resources.herb = player.resources.herb.add(EXP_LOCATIONS[player.explore.cur][6]);
 
+            if(player.resources.herb.gt(0)) getAchievement(15);
         }
-        console.log("win");
+        //console.log("win");
     }//赢了
     else{
         console.log("lose");
@@ -101,4 +107,33 @@ function updateRealmcap(){
     realmcap.classList.add('realm_'+REALM_DATA[player.family.realmcap][1]);
 }
 
-export { update_explore ,EXP_LOCATIONS, updateRealmcap , get_battle_passrate};
+
+function renderExplore(){
+    //player.family.stats.wh.mul(player.work.explore)
+    //↑探索工时
+    document.getElementById("explore_workhour").innerText = format_number(player.explore.wh) + 'wh/w\'';
+    document.getElementById("training_time").innerText = player.display.explore.trt;
+    document.getElementById("training_power").innerText = player.display.explore.trp;
+    document.getElementById("explore_battle_power").innerText = player.display.explore.bb;
+
+
+    document.getElementById("explore_success_chance").innerText = player.display.explore.pr;
+    let p = player.explore.trp.mag;
+    if(p<0.5) document.getElementById("training_power").style = `color:rgb(255,${Math.floor(p*510)},${Math.floor(p*510)}`;
+    else document.getElementById("training_power").style = `color:rgb(${Math.floor(510-p*510)},255,${Math.floor(510-p*510)}`;
+    p = get_battle_passrate();
+    if(p<0.5) document.getElementById("explore_success_chance").style = `color:rgb(255,${Math.floor(p*510)},${Math.floor(p*510)}`;
+    else document.getElementById("explore_success_chance").style = `color:rgb(${Math.floor(510-p*510)},255,${Math.floor(510-p*510)}`;
+    
+    
+
+    document.getElementById("explore_herb").innerText = format_number(player.resources.herb);
+
+    let hpc = player.resources.herb.mul(1e4).div(player.family.stats.cnt.add(0.01));
+    //console.log(hpc);
+    //console.log(hpc.add(1).ln().pow(0.8).mul(10));
+    document.getElementById("herb_per_catpital").innerText = format_number(hpc) + ' / 10,000c';
+    document.getElementById("herb_bonus").innerText = format_number(hpc.add(1).ln().pow(0.8).mul(10)) + '%';
+}
+
+export { update_explore ,EXP_LOCATIONS, updateRealmcap , get_battle_passrate , renderExplore};

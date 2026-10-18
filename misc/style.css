@@ -268,6 +268,93 @@ body{
     text-align:center;
     border: 2px solid white;
 }
+.achi_single{
+    width:80px;
+    height:80px;
+    display:inline-flex;
+    position:relative;
+    vertical-align: top;
+    align-items:center;
+    border: 2px solid white;
+    box-sizing:border-box;
+    text-align:center;
+    padding:4px;
+}
+.achi_single .tooltip {
+    position: absolute;
+    bottom: -35px;     
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: rgba(0, 0, 0, 0.65);
+    border:1px solid white;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;    
+    z-index: 10;
+    opacity: 0;            
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+.achi_single:hover .tooltip {
+    opacity: 1;           
+    visibility: visible;
+}
+.achi_uncomp{
+    background:radial-gradient(red,#800000,black);
+}
+.achi_comp{
+    background:radial-gradient(lime,green,black);
+}
+
+
+#achievement-toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px; 
+    z-index: 9999;
+    pointer-events: none; 
+}
+.achievement-toast {
+    display: flex;
+    align-items: center;
+    background: rgba(0, 99, 5, 0.95);
+    border: 2px solid #00ff00;
+    padding: 10px 15px;
+    color: white;
+    border-radius: 4px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    min-width: 200px;
+    
+    opacity: 0;
+    transform: translateX(100%);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.achievement-toast.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.achievement-toast .toast-title {
+    font-size: 18px;
+    font-weight:bold;
+    color: lime;
+    margin-bottom: 2px;
+    letter-spacing: 1px;
+}
+
+.achievement-toast .toast-name {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+
+
 .blank_location{
     background:linear-gradient(to right, brown,black,brown);
 }
