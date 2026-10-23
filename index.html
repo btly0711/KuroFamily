@@ -55,7 +55,7 @@
             <div id="main_content">
                 <div id="family_content" style="display:none">
                     <div id="get_member"class="family_button" onclick="get_member()">
-                        招揽一名<br><b>[微尘级初等]</b>成员
+                        招揽<span id='get_member_num'>1</span>名<br><b>[微尘级初等]</b>成员
                     </div>
                     ↓家族成员表(新生速度 <span id="main_birth_monitor">0</span> c/s)
                     <table id="family_members">
@@ -81,8 +81,8 @@
                     <span style='color:cyan'>工时分配:</span><br>
                     <span style='color:yellow'>无业:</span><span class="workhour_span"><span id="workhour_workless">100%</span></span><br>
                     <span style='color:lightgreen'>生育:</span>   <span class="workhour_span"><span onclick="wh_dtb(1,-20)">[- -]</span> <span onclick="wh_dtb(1,-2)">[-]</span> <span id="workhour_reproduce">0%</span><span onclick="wh_dtb(1,2)">[+]</span> <span onclick="wh_dtb(1,20)">[++]</span></span><br>
-                    <span style='color:plum'>探索:</span>   <span class="workhour_span"><span onclick="wh_dtb(2,-20)">[- -]</span> <span onclick="wh_dtb(2,-2)">[-]</span> <span id="workhour_explore">0%</span><span onclick="wh_dtb(2,2)">[+]</span> <span onclick="wh_dtb(2,20)">[++]</span></span><br>
-                    <span style='color:lightsalmon'>建筑:</span>   <span class="workhour_span"><span onclick="wh_dtb(3,-20)">[- -]</span> <span onclick="wh_dtb(3,-2)">[-]</span> <span id="workhour_building">0%</span><span onclick="wh_dtb(3,2)">[+]</span> <span onclick="wh_dtb(3,20)">[++]</span></span><br><br>
+                    <span id="explore_wh_span"><span style='color:plum'>探索:</span>   <span class="workhour_span"><span onclick="wh_dtb(2,-20)">[- -]</span> <span onclick="wh_dtb(2,-2)">[-]</span> <span id="workhour_explore">0%</span><span onclick="wh_dtb(2,2)">[+]</span> <span onclick="wh_dtb(2,20)">[++]</span></span><br></span>
+                    <span id="build_wh_span"><span style='color:lightsalmon'>建筑:</span>   <span class="workhour_span"><span onclick="wh_dtb(3,-20)">[- -]</span> <span onclick="wh_dtb(3,-2)">[-]</span> <span id="workhour_building">0%</span><span onclick="wh_dtb(3,2)">[+]</span> <span onclick="wh_dtb(3,20)">[++]</span></span></span><br><br>
 
                     <span style='color:lightgreen;font-weight:bold'>生育计划 (基础 1c/1920wh): <br>
                     
@@ -107,9 +107,9 @@
                     </div><br>
                         
                     <span style="color:lime">探索进度 : <span id="explore_max_location"> / </span> -> 环境突破加成 : <span id="explore_break_mul">1.00x</span></span><br><br>
-                    
+                    <span id="herb_related">
                     灵药 : <span id="explore_herb" style="color:limegreen">0</span><br>
-                    药猫比 : <span id="herb_per_catpital" style="color:limegreen">0/10000c</span> -> 灵药突破加成 : <span id="herb_bonus" style="color:limegreen">0.00%</span><br>
+                    药猫比 : <span id="herb_per_catpital" style="color:limegreen">0/10000c</span> -> 灵药突破加成 : <span id="herb_bonus" style="color:limegreen">0.00%</span><br></span>
                 </div>
                 <div id="building_content" style="display:none">
                     建设工时 : <span id="building_workhour" style="color:lightsalmon">0wh/w'</span> -> 建设速度 : <span id="building_workhour_rt" style="color:lightsalmon">0wh/s</span>
@@ -160,9 +160,9 @@
             <div id="right_row_content">
                     &nbsp; <img src="image/res_cat.png"> 喵口 : <span id="total_cat" style='color:pink'>0c</span><br>
                     &nbsp; <img src="image/res_wh.png"> 工时 : <span id="total_workhour" style="color:lightblue">0wh/w'</span><br>
-                    &nbsp; <img src="image/res_ore.png"> 灵矿 : <span id="total_ore" style="color:gray">0</span><br>
-                    &nbsp; <img src="image/res_herb.png"> 灵药 : <span id="total_herb" style="color:limegreen">0</span><br>
-                    &nbsp; <img src="image/res_bp.png"> 战力 : <b><span id="total_bp" style="color:gold"></span></b>
+                    <span id="bp_display_span"> &nbsp; <img src="image/res_bp.png"> 战力 : <b><span id="total_bp" style="color:gold"></span></b><br></span>
+                    <span id="ore_display_span"> &nbsp; <img src="image/res_ore.png"> 灵矿 : <span id="total_ore" style="color:gray">0</span><br></span>
+                    <span id="herb_display_span"> &nbsp; <img src="image/res_herb.png"> 灵药 : <span id="total_herb" style="color:limegreen">0</span><br></span>
             </div>
         </div>
     </body>

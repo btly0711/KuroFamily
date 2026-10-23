@@ -2,7 +2,7 @@
 
 import { player ,REALM_DATA} from "./main.js";
 import { format_timedur, format_number , renderExploreLocation} from "./display.js";
-import { getAchievement } from "./achievement.js";
+import { getAchievement ,showAchievementToast} from "./achievement.js";
 import Decimal from "./break_eternity.js";
 
 const EXP_LOCATIONS = [
@@ -72,6 +72,7 @@ function location_change(op){
 function location_fight(){
     if(get_battle_passrate().gt(Math.random())){
         if(player.explore.cur > player.explore.prog){
+            showAchievementToast([`${EXP_LOCATIONS[player.explore.cur][0]} 开拓 成功`,`环境 ${format_number(EXP_LOCATIONS[Math.max(0,player.explore.cur-1)][2])}x -> ${format_number(EXP_LOCATIONS[player.explore.cur][2])}x , ${(EXP_LOCATIONS[player.explore.cur][3]!=EXP_LOCATIONS[player.explore.cur-1][3])?'解锁新境界':''}`],"battle-toast-win");
             player.explore.prog += 1;
             player.explore.cur += 1;
             player.explore.b_mul = EXP_LOCATIONS[player.explore.prog][2];
@@ -83,9 +84,10 @@ function location_fight(){
             if(EP==1) getAchievement(9);
             if(EP==4) getAchievement(10);
             if(EP==12) getAchievement(17);
+            
         }
         else{
-            //扫荡(0.08)
+            showAchievementToast([`${EXP_LOCATIONS[player.explore.cur][0]} 扫荡 成功`,`获取 ${format_number(EXP_LOCATIONS[player.explore.cur][5])} 灵矿 ${(player.explore.cur>=5)?`, ${format_number(EXP_LOCATIONS[player.explore.cur][6])} 灵药`:``}`],"battle-toast-win");
             player.resources.ore = player.resources.ore.add(EXP_LOCATIONS[player.explore.cur][5]);
             player.resources.herb = player.resources.herb.add(EXP_LOCATIONS[player.explore.cur][6]);
 
@@ -94,6 +96,7 @@ function location_fight(){
         //console.log("win");
     }//赢了
     else{
+        showAchievementToast([`${EXP_LOCATIONS[player.explore.cur][0]} ${(player.explore.cur > player.explore.prog)?"开拓":"扫荡"} 失败.`,`什么都没有得到。`],"battle-toast-lose");
         console.log("lose");
     }//输了
     player.explore.trt = new Decimal(0);//训练时间清零

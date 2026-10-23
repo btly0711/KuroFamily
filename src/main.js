@@ -1,11 +1,11 @@
 "use strict";
 
-import {renderGame, renderFamilyMembers,renderExploreLocation,format_number,format_chance_time} from "./display.js";
+import {renderGame, renderFamilyMembers,renderExploreLocation,format_number,format_chance_time,RefreshLockedContent} from "./display.js";
 import {update_explore, updateRealmcap} from "./explore.js";
 import {update_building} from "./building.js";
 import {LoadAchievement,getAchievement} from "./achievement.js";
 import Decimal from "./break_eternity.js";
-const GAME_VERSION = 'V0.11a';
+const GAME_VERSION = 'V0.12';
 let player ={
     time:{
         cur:new Decimal(0),//存储单位:分钟
@@ -74,7 +74,7 @@ let player ={
             prog_max:new Decimal(1),//建筑需要工作量
         },
         tda:{
-            level:new Decimal(1),//等级
+            level:new Decimal(0),//等级
             price:new Decimal(1),//价格(灵矿)
             effect:new Decimal(1),//效果(时速)
         }
@@ -135,20 +135,10 @@ function prepareGame(){
     catch(error) {console.error("加载本地存档时出错！");
         console.error(error);}
     complete_data();//补全数据
-    //上面加载数据
 
-    document.getElementById(`${player.display.tab}_button`).classList.add("tab_button_active");
-    document.getElementById(`${player.display.tab}_content`).style.display = 'block';
-    //load tab display status
-    updateRealmcap();
-    renderFamilyMembers();
-    renderExploreLocation();
-    LoadAchievement();
+    loadGamePage();//游戏所有懒更新
 
     complete_achievements();//补全成就
-    //load something not loaded on [render]
-    document.getElementById("cur_version").innerText = GAME_VERSION;
-    document.getElementById("loading_screen").style.display='none';
     
     let lastTime = Date.now();
     let cnt_t = 0,sum_t = 0,adt = 0.2;
@@ -168,8 +158,22 @@ function prepareGame(){
     },1000/tickspeed);
 }
 
-
 window.prepareGame = prepareGame;
+function loadGamePage(){
+    updateRealmcap();
+    renderFamilyMembers();
+    renderExploreLocation();
+    LoadAchievement();
+    updateVersionTab();
+    RefreshLockedContent();
+}
+function updateVersionTab(){
+    document.getElementById("cur_version").innerText = GAME_VERSION;
+    document.getElementById("loading_screen").style.display='none';
+    
+    document.getElementById(`${player.display.tab}_button`).classList.add("tab_button_active");
+    document.getElementById(`${player.display.tab}_content`).style.display = 'block';
+}
 const REALM_DATA = [
     ["微尘级初等",'basic',1e-4,1e-5,0.1,0],
     ["微尘级高等",'basic',5e-5,1e-5,0.2,1],
@@ -300,7 +304,7 @@ function update_work(){
     player.family.birt = reproduce_workhour;// p/m单位
 }
 function get_member(){
-    player.family.cats[0]=player.family.cats[0].add(1);
+    player.family.cats[0]=player.family.cats[0].add(player.family.stats.wh.div(10).add(3).log10().mul(2).round());
     getAchievement(1);
 }
 window.get_member = get_member;
@@ -325,6 +329,16 @@ function load_from_save(save) {
         return value;
     });
     complete_data();
+    complete_achievements();
+    
+    save_to_local();
+    
+    updateRealmcap();
+    renderFamilyMembers();
+    renderExploreLocation();
+    LoadAchievement();
+    updateVersionTab();
+    RefreshLockedContent();
 }
 const SAVE_KEY = 'Kuro_Family_Local_Save';
 function save_to_local(){
@@ -398,8 +412,6 @@ document.getElementById("load-file-input").addEventListener("change", (e) => {
     };
     reader.readAsText(file);
 
-    save_to_local();
-    location.reload();
 });
 
 export {player,REALM_DATA};

@@ -11,16 +11,16 @@ const ACHIEVEMENTS = [
     ["你跑不过我你信吗","将某境界小猫的休息时长设为0"],
     ["指数增长?","在分工菜单中将小猫分配到生育岗位"],
     ["标准劳力","有小猫抵达万物级"],
-    ["双倍力量","有小猫抵达万物级高等"],
+    ["双倍力量","有小猫抵达万物级高等","解锁探索菜单"],
     ["反正卡上限…","将某境界小猫的修炼时长设为0"],//7
     ["探索小队","将小猫分配到探索岗位"],
-    ["首战告捷","通过练兵场-1"],
+    ["首战告捷","通过练兵场-1","解锁灵矿，建设菜单"],
     ["界限突破","通过练兵场-4"],
     ["自增循环","有小猫抵达万物级巅峰"],
     ["并不是指数增长","抵达生育一重软上限"],
     ["土木老猫","小猫分配到建筑岗位"],
     ["时间扭曲","建造第1个乱时法阵"],
-    ["大锅药汤","获取灵药"],//14
+    ["这是……灵药？","扫荡燕岗城-1","解锁灵药，以及突破率加成"],//14
     ["生存延续","有小猫抵达潮汐级"],
     ["深入地宫","通过燕岗近郊 -4"],
     ["\"第八维度\"","有小猫抵达潮汐级高等"],
@@ -35,7 +35,7 @@ function LoadAchievement(){
     const achi_table = document.getElementById("achievement_table");
     let at_c = "";
     for(let i=1;i<=ACHI_NUM;i+=1){
-        at_c += `<div id="achi_${i}" class="achi_single achi_${player.achievement.list[i]==1?'':'un'}comp"><span>${ACHIEVEMENTS[i][0]}</span><div class="tooltip">${ACHIEVEMENTS[i][1]}</div></div>`;
+        at_c += `<div id="achi_${i}" class="achi_single achi_${player.achievement.list[i]==1?'':'un'}comp "><span ${(!ACHIEVEMENTS[i][2])?'':'class="achi_spec"'}>${ACHIEVEMENTS[i][0]}</span><div class="tooltip">${ACHIEVEMENTS[i][1]}${(!ACHIEVEMENTS[i][2])?'':`<br><span class="achi_spec">${ACHIEVEMENTS[i][2]}</span>`}</div></div>`;
         if(i%7==0) at_c += '<br>';
     }
     achi_table.innerHTML = at_c;
@@ -47,7 +47,8 @@ function getAchievement(num){
         player.achievement.total += 1;
         document.getElementById(`achi_${num}`).classList.remove("achi_uncomp");
         document.getElementById(`achi_${num}`).classList.add("achi_comp");
-        showAchievementToast(ACHIEVEMENTS[num]);
+        showAchievementToast(ACHIEVEMENTS[num],'achi-toast');
+        if(!ACHIEVEMENTS[num][2]) RefreshLockedContent();//重载解锁。
     }
 
 }
@@ -60,15 +61,16 @@ function renderAchievement(){
 }
 
 
-function showAchievementToast(text){
+function showAchievementToast(text,e_cl){
     const container = document.getElementById('achievement-toast-container');
     const toast = document.createElement('div');
-    toast.className = 'achievement-toast';
+    toast.classList.add('achievement-toast');
+    toast.classList.add(e_cl);
     
     toast.innerHTML = `
         <div>
             <div class="toast-title">${text[0]}</div>
-            <div class="toast-name">${text[1]}</div>
+            <div class="toast-name">${text[1]}${(!text[2])?'':` : <span class="achi_spec">${text[2]}</span>`}</div>
         </div>
     `;
     
@@ -88,4 +90,4 @@ function showAchievementToast(text){
     }, 3000);
 }//显示弹出条！
 
-export {LoadAchievement,getAchievement , renderAchievement};
+export {LoadAchievement,getAchievement , renderAchievement,showAchievementToast};

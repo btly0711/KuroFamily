@@ -173,7 +173,6 @@ body{
     background-color: #313131;
     text-align:center;
     height:24px;
-    width:260px;
     display:inline-block;
 }
 .longer_button:hover{
@@ -307,6 +306,11 @@ body{
 .achi_comp{
     background:radial-gradient(lime,green,black);
 }
+.achi_spec {
+    color: white;
+    font-weight:bold;
+    -webkit-text-stroke: 0.5px violet;
+}
 
 
 #achievement-toast-container {
@@ -319,11 +323,10 @@ body{
     z-index: 9999;
     pointer-events: none; 
 }
+
 .achievement-toast {
     display: flex;
     align-items: center;
-    background: rgba(0, 99, 5, 0.95);
-    border: 2px solid #00ff00;
     padding: 10px 15px;
     color: white;
     border-radius: 4px;
@@ -334,6 +337,23 @@ body{
     transform: translateX(100%);
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
+.achi-toast {
+    background: rgba(0, 99, 5, 0.95);
+    border: 2px solid #00ff00;
+}
+.battle-toast-win {
+    background: rgba(99, 99, 0, 0.95);
+    border: 2px solid #ffff00;
+}
+.battle-toast-lose {
+    background: rgba(99, 5, 0, 0.95);
+    border: 2px solid #ff0000;
+}
+.build-toast {
+    background: rgba(99, 49, 47, 0.95);
+    border: 2px solid salmon;
+}
+
 
 .achievement-toast.show {
     opacity: 1;
@@ -343,9 +363,20 @@ body{
 .achievement-toast .toast-title {
     font-size: 18px;
     font-weight:bold;
-    color: lime;
     margin-bottom: 2px;
     letter-spacing: 1px;
+}
+.achi-toast .toast-title{
+    color: lime;
+}
+.battle-toast-win .toast-title{
+    color: yellow;
+}
+.battle-toast-lose .toast-title{
+    color: red;
+}
+.build-toast .toast-title{
+    color: salmon;
 }
 
 .achievement-toast .toast-name {

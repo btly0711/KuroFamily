@@ -3,7 +3,7 @@
 import { player ,REALM_DATA} from "./main.js";
 import {format_number} from "./display.js";
 import Decimal from "./break_eternity.js";
-import { getAchievement } from "./achievement.js";
+import { getAchievement ,showAchievementToast} from "./achievement.js";
 
 const BUILDING_MAPS = {"none":"[无]","tda":"[乱时法阵]"}
 function renderBuilding(){
@@ -36,6 +36,8 @@ function update_building(dt){
             player.build.tda.effect = (new Decimal(1.5)).pow(player.build.tda.level);//计算效果
             if(player.build.tda.level.gte(1)) getAchievement(14);
             if(player.build.tda.level.gte(13)) getAchievement(20);
+            
+            showAchievementToast([`乱时法阵 Lv.${format_number(player.build.tda.level)} 竣工`,`时间流速 ${format_number((new Decimal(1.5)).pow(player.build.tda.level))}x(↑)`],"build-toast");
         }
         player.build.wt.progress = new Decimal(0);
         player.build.wt.prog_max = new Decimal(1);

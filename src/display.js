@@ -19,6 +19,45 @@ function change_tab(target){
 
 window.change_tab = change_tab;
 
+
+function RefreshLockedContent(){
+    if(!player.achievement.list[6]){
+        document.getElementById("explore_button").style.display="none";
+        document.getElementById("explore_wh_span").style.display="none";
+        document.getElementById("bp_display_span").style.display="none";
+    }
+    else{
+        document.getElementById("explore_button").style.display="block";
+        document.getElementById("explore_wh_span").style.display="block";
+        document.getElementById("bp_display_span").style.display="block";
+    }
+    
+    if(!player.achievement.list[9]){
+        document.getElementById("building_button").style.display="none";
+        document.getElementById("build_wh_span").style.display="none";
+        document.getElementById("ore_display_span").style.display="none";
+    }
+    else{
+        document.getElementById("building_button").style.display="block";
+        document.getElementById("build_wh_span").style.display="block";
+        document.getElementById("ore_display_span").style.display="block";
+    }
+    if(!player.achievement.list[15]){
+        document.getElementById("herb_display_span").style.display="none";
+        document.getElementById("herb_related").style.display="none";
+    }
+    else{
+        document.getElementById("herb_display_span").style.display="block";
+        document.getElementById("herb_related").style.display="block";
+    }
+}
+window.RefreshLockedContent = RefreshLockedContent;
+/*
+progress1(ach.6):抵达万物级高等，解锁探索
+progress2(ach.9):通过练兵场-1，解锁灵矿/建筑
+progress3(ach.15):通过燕岗-1，解锁灵药
+ */
+
 function renderGame(adt){
     renderMain(adt);
     switch (player.display.tab){
@@ -61,6 +100,7 @@ function renderMain(adt){
 }
 function renderFamily(){
     let members = '';
+    document.getElementById("get_member_num").innerText = format_number(player.family.stats.wh.div(10).add(3).log10().mul(2).round())
     
     
     for(let i=0;i<=player.family.maxrealm;i+=1){
@@ -355,4 +395,4 @@ function format_chance_time(decimal){
     return '('+format_timedur(decimal.pow(-1)) +')⁻¹';
 }
 
-export {renderGame, renderFamilyMembers,renderExploreLocation,format_number,format_chance_time,format_timedur,};
+export {renderGame, renderFamilyMembers,renderExploreLocation,format_number,format_chance_time,format_timedur,RefreshLockedContent};
