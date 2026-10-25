@@ -1,16 +1,17 @@
 "use strict";
 
-import {renderGame, renderFamilyMembers,renderExploreLocation,format_number,format_chance_time,RefreshLockedContent} from "./display.js";
+import {renderGame, renderFamilyMembers,renderExploreLocation,format_number,format_chance_time} from "./display.js";
 import {update_explore, updateRealmcap} from "./explore.js";
 import {update_building} from "./building.js";
-import {LoadAchievement,getAchievement} from "./achievement.js";
+import {LoadAchievement,getAchievement , RefreshLockedContent} from "./achievement.js";
 import Decimal from "./break_eternity.js";
-const GAME_VERSION = 'V0.12';
+const GAME_VERSION = 'V0.13';
 let player ={
     time:{
         cur:new Decimal(0),//存储单位:分钟
         spd:new Decimal("300"),//分钟/s
         save:0,//自动保存计数器，30触发保存
+        reseting:0,//重置器
     },
     display:{
         tab:"family",//选项卡
@@ -80,6 +81,11 @@ let player ={
         }
 //0待机1工作中//time distorting array@乱时法阵
     },
+    influ:{
+        points:new Decimal(0),//影响力
+        times:new Decimal(0),//重置次数
+        reseting:0,//重置标记，防止家族猫浑水摸鱼
+    },
     achievement:{
         total:0,
         list:{},
@@ -103,10 +109,10 @@ function complete_data(){
     if(!player.build.wt) player.build.wt = {status:'none',progress:new Decimal(0),prog_max:new Decimal(1),};
     if(!player.build.tda) player.build.tda = {level:new Decimal(0),price:new Decimal(1),effect:new Decimal(1)};
     //0.11↓
-    if(!player.achievement){
-        console.log("achievement reloaded");
-        player.achievement = {total:0,list:{}};
-    }
+    if(!player.achievement) player.achievement = {total:0,list:{}};
+    //0.13↓
+    if(!player.influ) player.influ ={points:new Decimal(0),times:new Decimal(0),};
+    if(!player.time.reseting) player.time.reseting = 0;
 }//最多同时兼容10个版本
 function complete_achievements(){
     //0.11↓
@@ -211,6 +217,8 @@ function update_family(dt){
 }
 function update_family_rdata(){
     let wh_n = new Decimal(0),cnt_n = new Decimal(0);//计数
+    let wh_bonus = (new Decimal(1.01)).pow(player.achievement.total);//成就加成
+    wh_bonus = wh_bonus.mul(player.influ.points.mul(2).add(1).ln().add(1));//影响力-工时加成(WIP/0.14待删除)
     for(let i=0;i<=player.family.realmcap;i+=1){
         player.family.rdata[i] ||= {};
         if(player.family.rdata[i].timedtb == undefined) player.family.rdata[i].timedtb = {
@@ -221,14 +229,14 @@ function update_family_rdata(){
         player.family.rdata[i].br = new Decimal(REALM_DATA[i][2]).mul(player.family.rdata[i].timedtb.ct.div(60).pow(0.8)).mul(player.explore.b_mul);//修炼时间乘数 | 探索乘数
         player.family.rdata[i].br = player.family.rdata[i].br.mul(player.resources.herb.mul(1e4).div(player.family.stats.cnt.add(0.01)).add(1).ln().pow(0.8).mul(0.1).add(1));//灵药乘数
         player.family.rdata[i].dd = new Decimal(REALM_DATA[i][3]).mul(player.family.rdata[i].timedtb.rt.add(2).div(62).pow(-0.8));
-        player.family.rdata[i].wk = new Decimal(REALM_DATA[i][4]).mul(player.family.rdata[i].timedtb.wk);//默认60h工作/d
+        player.family.rdata[i].wk = new Decimal(REALM_DATA[i][4]).mul(player.family.rdata[i].timedtb.wk).mul(wh_bonus);//默认60h工作/d
 
         //以后这里会有乘数
         //player.family.rdata[i].wk = player.family.rdata[i].wk.div(player.family.rdata[i].dd.mul(player.time.spd).add(1));
         wh_n = wh_n.add(player.family.rdata[i].wk.mul(player.family.cats[i]));
         cnt_n = cnt_n.add(player.family.cats[i])
     }
-    player.family.stats.wh = wh_n.mul((new Decimal(1.01)).pow(player.achievement.total));//成就加成
+    player.family.stats.wh = wh_n;
     player.family.stats.cnt = cnt_n;
 
 }
@@ -238,6 +246,7 @@ function calculate_family_bd(gt){//gametime passed
     //console.log(gt);
     for(let i=0;i<=player.family.maxrealm+1;i+=1) p_cats[i]=player.family.cats[i];
     for(let i=player.family.maxrealm;i>=0;i-=1){
+        if(player.time.reseting) continue;//重置中
         brate = player.family.rdata[i].br.mul(gt);
         drate = player.family.rdata[i].dd.mul(gt);
         if(brate.gt(brate.div(brate.add(drate)))) brate = brate.div(brate.add(drate));
@@ -265,6 +274,7 @@ function calculate_family_bd(gt){//gametime passed
         }
     }//突破计算
     for(let i=player.family.maxrealm;i>=0;i-=1){
+        if(player.time.reseting) continue;//重置中
         brate = player.family.rdata[i].br.mul(gt);
         drate = player.family.rdata[i].dd.mul(gt);
         if(drate.gt(drate.div(brate.add(drate)))) drate = drate.div(brate.add(drate));
@@ -278,6 +288,7 @@ function calculate_family_bd(gt){//gametime passed
         }
     }//死亡计算
 
+    if(player.time.reseting) return;//重置中
     let nrate = player.family.birt.mul(gt);
     let nf=nrate.floor();
     if(nrate.sub(nf).gt(Math.random())) nrate=nf.add(1);
@@ -413,5 +424,7 @@ document.getElementById("load-file-input").addEventListener("change", (e) => {
     reader.readAsText(file);
 
 });
+
+
 
 export {player,REALM_DATA};

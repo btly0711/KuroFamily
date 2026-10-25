@@ -24,7 +24,7 @@ const ACHIEVEMENTS = [
     ["生存延续","有小猫抵达潮汐级"],
     ["深入地宫","通过燕岗近郊 -4"],
     ["\"第八维度\"","有小猫抵达潮汐级高等"],
-    ["第九维度是个谎言","有小猫抵达潮汐级巅峰"],
+    ["第九维度是个谎言","有小猫抵达潮汐级巅峰","解锁影响力重置层(点击图标来重置)"],
     ["十眼一年","时间流速抵达5w'/s"],
     ["1000年生きてる","游戏内时间抵达1000年"],
 ];
@@ -48,7 +48,7 @@ function getAchievement(num){
         document.getElementById(`achi_${num}`).classList.remove("achi_uncomp");
         document.getElementById(`achi_${num}`).classList.add("achi_comp");
         showAchievementToast(ACHIEVEMENTS[num],'achi-toast');
-        if(!ACHIEVEMENTS[num][2]) RefreshLockedContent();//重载解锁。
+        RefreshLockedContent();//重载解锁。
     }
 
 }
@@ -58,6 +58,46 @@ function renderAchievement(){
     document.getElementById("achi_num").innerText=player.achievement.total;
     document.getElementById("achi_bonus").innerText=format_number((new Decimal(1.01)).pow(player.achievement.total));
 
+}
+
+
+
+function RefreshLockedContent(){
+    if(!player.achievement.list[6]){
+        document.getElementById("explore_button").style.display="none";
+        document.getElementById("explore_wh_span").style.display="none";
+        document.getElementById("bp_display_span").style.display="none";
+    }
+    else{
+        document.getElementById("explore_button").style.display="block";
+        document.getElementById("explore_wh_span").style.display="block";
+        document.getElementById("bp_display_span").style.display="block";
+    }
+    
+    if(!player.achievement.list[9]){
+        document.getElementById("building_button").style.display="none";
+        document.getElementById("build_wh_span").style.display="none";
+        document.getElementById("ore_display_span").style.display="none";
+    }
+    else{
+        document.getElementById("building_button").style.display="block";
+        document.getElementById("build_wh_span").style.display="block";
+        document.getElementById("ore_display_span").style.display="block";
+    }
+    if(!player.achievement.list[15]){
+        document.getElementById("herb_display_span").style.display="none";
+        document.getElementById("herb_related").style.display="none";
+    }
+    else{
+        document.getElementById("herb_display_span").style.display="block";
+        document.getElementById("herb_related").style.display="block";
+    }
+    if(!player.achievement.list[19]){
+        document.getElementById("influ_display_span").style.display="none";
+    }
+    else{
+        document.getElementById("influ_display_span").style.display="block";
+    }
 }
 
 
@@ -90,4 +130,4 @@ function showAchievementToast(text,e_cl){
     }, 3000);
 }//显示弹出条！
 
-export {LoadAchievement,getAchievement , renderAchievement,showAchievementToast};
+export {LoadAchievement,getAchievement , renderAchievement,showAchievementToast , RefreshLockedContent};

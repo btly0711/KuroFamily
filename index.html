@@ -4,6 +4,7 @@
         <link rel = "stylesheet" href = "misc/style.css">
         
         <script type="module" src = "src/main.js"> </script>
+        <script type="module" src = "src/influence.js"> </script>
 
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
@@ -20,6 +21,15 @@
             血洛家族模拟器 by 纱雪<br>
             加载中……<br>
             (如果在这个界面太久,可能代表存在严重问题!)
+        </div>
+        <div id="reset_screen">
+            <div id="influ_reset_screen">
+                <span style="color:#02FDEA">进行【影响力】重置</span>将会重置你的家族，探索进度/探索资源，乱时法阵。<br>
+                <span style="color:#02FDEA" id="pending_influ_screen">作为交换，你将得到 0 影响力</span>  <span class="realm_basic3">(需要至少40,000,000只潮汐级初等小猫)</span><br>
+                <span class="longer_button" onclick="cancel_influ_reset()" style="background-color:crimson">&nbsp; = 取 消 = &nbsp;</span>
+                &nbsp;
+                <span class="longer_button" onclick="commit_influ_reset()"  style="background-color:#02FDEA;color:black">&nbsp; = 重 置 = &nbsp;</span>
+            </div>
         </div>
         <div id="global_content">
             <div id="achievement-toast-container"></div>
@@ -125,7 +135,7 @@
                     
                 </div>
                 <div id="achievement_content" style="display:none">
-                    目前得到了<span style="color:aqua" id="achi_num">0</span>个成就，全局工时*<span style="color:aqua" id="achi_bonus">1.00</span>.<br>
+                    目前得到了<span style="color:greenyellow" id="achi_num">0</span>个成就，全局工时*<span style="color:greenyellow" id="achi_bonus">1.00</span>.<br>
                     <div id="achievement_table">
 
                     </div>
@@ -163,6 +173,7 @@
                     <span id="bp_display_span"> &nbsp; <img src="image/res_bp.png"> 战力 : <b><span id="total_bp" style="color:gold"></span></b><br></span>
                     <span id="ore_display_span"> &nbsp; <img src="image/res_ore.png"> 灵矿 : <span id="total_ore" style="color:gray">0</span><br></span>
                     <span id="herb_display_span"> &nbsp; <img src="image/res_herb.png"> 灵药 : <span id="total_herb" style="color:limegreen">0</span><br></span>
+                    <span id="influ_display_span" style="color:#02fdea" onclick="try_influ_reset()"> &nbsp; <img src="image/res_influ.png"> 影响力 : <span id="total_influ" >0</span>(+<span id="pending_influ">0</span>)<br>[WIP:0.14移除]工时加成:<span id="influ_bonus">1.00</span>x</span>
             </div>
         </div>
     </body>

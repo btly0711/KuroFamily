@@ -4,6 +4,7 @@ import { player , REALM_DATA} from "./main.js";
 import { renderBuilding } from "./building.js";
 import { renderAchievement ,getAchievement} from "./achievement.js";
 import { EXP_LOCATIONS , get_battle_passrate , renderExplore} from "./explore.js";
+import { get_pending_influ } from "./influence.js";
 import Decimal from "./break_eternity.js";
 
 
@@ -19,39 +20,6 @@ function change_tab(target){
 
 window.change_tab = change_tab;
 
-
-function RefreshLockedContent(){
-    if(!player.achievement.list[6]){
-        document.getElementById("explore_button").style.display="none";
-        document.getElementById("explore_wh_span").style.display="none";
-        document.getElementById("bp_display_span").style.display="none";
-    }
-    else{
-        document.getElementById("explore_button").style.display="block";
-        document.getElementById("explore_wh_span").style.display="block";
-        document.getElementById("bp_display_span").style.display="block";
-    }
-    
-    if(!player.achievement.list[9]){
-        document.getElementById("building_button").style.display="none";
-        document.getElementById("build_wh_span").style.display="none";
-        document.getElementById("ore_display_span").style.display="none";
-    }
-    else{
-        document.getElementById("building_button").style.display="block";
-        document.getElementById("build_wh_span").style.display="block";
-        document.getElementById("ore_display_span").style.display="block";
-    }
-    if(!player.achievement.list[15]){
-        document.getElementById("herb_display_span").style.display="none";
-        document.getElementById("herb_related").style.display="none";
-    }
-    else{
-        document.getElementById("herb_display_span").style.display="block";
-        document.getElementById("herb_related").style.display="block";
-    }
-}
-window.RefreshLockedContent = RefreshLockedContent;
 /*
 progress1(ach.6):抵达万物级高等，解锁探索
 progress2(ach.9):通过练兵场-1，解锁灵矿/建筑
@@ -93,9 +61,15 @@ function renderMain(adt){
 
     document.getElementById("total_cat").innerText = format_number(player.family.stats.cnt)+ 'c';
     document.getElementById("total_workhour").innerText = format_number(player.family.stats.wh)+ 'wh/w\'';
-    document.getElementById("total_ore").innerText = format_number(player.resources.ore);
-    document.getElementById("total_herb").innerText = format_number(player.resources.herb);
-    document.getElementById("total_bp").innerText = player.display.explore.bb;
+    if(player.achievement.list[6])document.getElementById("total_bp").innerText = player.display.explore.bb;
+    if(player.achievement.list[9])document.getElementById("total_ore").innerText = format_number(player.resources.ore);
+    if(player.achievement.list[15])document.getElementById("total_herb").innerText = format_number(player.resources.herb);
+    if(player.achievement.list[19]){
+        document.getElementById("total_influ").innerText = format_number(player.influ.points); 
+        document.getElementById("pending_influ").innerText = format_number(get_pending_influ());
+        document.getElementById("influ_bonus").innerText = format_number(player.influ.points.mul(2).add(1).ln().add(1));
+    }
+    
 
 }
 function renderFamily(){
@@ -395,4 +369,4 @@ function format_chance_time(decimal){
     return '('+format_timedur(decimal.pow(-1)) +')⁻¹';
 }
 
-export {renderGame, renderFamilyMembers,renderExploreLocation,format_number,format_chance_time,format_timedur,RefreshLockedContent};
+export {renderGame, renderFamilyMembers,renderExploreLocation,format_number,format_chance_time,format_timedur};

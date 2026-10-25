@@ -49,10 +49,36 @@ body{
     top: 0px;
     left: 0px;
     font-size: 60px;
-    display: flex;
+    display: none;
     justify-content: center;
     align-items: center;
     background-color: #232323;
+}
+#reset_screen {
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(0,0,0,0.5);
+}
+#influ_reset_screen {
+    width: 40%;
+    height: 40%;
+    z-index: 11;
+    position: absolute;
+    top: 30%;
+    left: 30%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(2,253,235,0.2);
+    border:3px solid #02FDEA;
 }
 #left_row_content{
     width:16%;
@@ -258,8 +284,8 @@ body{
 }
 #get_member{
     background: linear-gradient(to bottom right, white,pink,red,pink,white);
-    left:42%;
-    width:16%;
+    left:38%;
+    width:24%;
 }
 #explore_location_div{
     width:400px;
@@ -353,6 +379,10 @@ body{
     background: rgba(99, 49, 47, 0.95);
     border: 2px solid salmon;
 }
+.influ-toast {
+    background: rgba(1, 99, 89, 0.95);
+    border: 2px solid #02FDEA;
+}
 
 
 .achievement-toast.show {
@@ -377,6 +407,9 @@ body{
 }
 .build-toast .toast-title{
     color: salmon;
+}
+.influ-toast .toast-title{
+    color: #02FDEA;
 }
 
 .achievement-toast .toast-name {
