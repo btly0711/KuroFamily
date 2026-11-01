@@ -94,9 +94,11 @@ function RefreshLockedContent(){
     }
     if(!player.achievement.list[19]){
         document.getElementById("influ_display_span").style.display="none";
+        document.getElementById("influ_button").style.display="none";
     }
     else{
         document.getElementById("influ_display_span").style.display="block";
+        document.getElementById("influ_button").style.display="block";
     }
 }
 

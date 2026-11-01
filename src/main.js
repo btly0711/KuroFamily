@@ -4,8 +4,9 @@ import {renderGame, renderFamilyMembers,renderExploreLocation,format_number,form
 import {update_explore, updateRealmcap} from "./explore.js";
 import {update_building} from "./building.js";
 import {LoadAchievement,getAchievement , RefreshLockedContent} from "./achievement.js";
+import {ReloadInfluMilestones} from "./influence.js";
 import Decimal from "./break_eternity.js";
-const GAME_VERSION = 'V0.13';
+const GAME_VERSION = 'V0.14';
 let player ={
     time:{
         cur:new Decimal(0),//存储单位:分钟
@@ -15,6 +16,9 @@ let player ={
     },
     display:{
         tab:"family",//选项卡
+        subtab:{
+            influ:"mile",
+        },//子选项卡
         format:0,//计数法
         birt:{
             wh:"0wh/w'",
@@ -84,6 +88,7 @@ let player ={
     influ:{
         points:new Decimal(0),//影响力
         times:new Decimal(0),//重置次数
+        miles:{},
         reseting:0,//重置标记，防止家族猫浑水摸鱼
     },
     achievement:{
@@ -113,6 +118,9 @@ function complete_data(){
     //0.13↓
     if(!player.influ) player.influ ={points:new Decimal(0),times:new Decimal(0),};
     if(!player.time.reseting) player.time.reseting = 0;
+    //0.14↓
+    if(!player.display.subtab) player.display.subtab ={influ:"mile",};
+    if(!player.influ.miles) player.influ.miles = {};
 }//最多同时兼容10个版本
 function complete_achievements(){
     //0.11↓
@@ -172,13 +180,19 @@ function loadGamePage(){
     LoadAchievement();
     updateVersionTab();
     RefreshLockedContent();
+    ReloadInfluMilestones();
 }
+const SUBTAB_TABS = ["influ"];
 function updateVersionTab(){
     document.getElementById("cur_version").innerText = GAME_VERSION;
     document.getElementById("loading_screen").style.display='none';
     
     document.getElementById(`${player.display.tab}_button`).classList.add("tab_button_active");
     document.getElementById(`${player.display.tab}_content`).style.display = 'block';
+    for(let t=0;t<SUBTAB_TABS.length;t+=1){
+        document.getElementById(`${SUBTAB_TABS[t]}_${player.display.subtab[SUBTAB_TABS[t]]}_button`).classList.add("subtab_button_active");
+        document.getElementById(`${SUBTAB_TABS[t]}_${player.display.subtab[SUBTAB_TABS[t]]}_content`).style.display = 'block';
+    }
 }
 const REALM_DATA = [
     ["微尘级初等",'basic',1e-4,1e-5,0.1,0],
@@ -315,7 +329,7 @@ function update_work(){
     player.family.birt = reproduce_workhour;// p/m单位
 }
 function get_member(){
-    player.family.cats[0]=player.family.cats[0].add(player.family.stats.wh.div(10).add(3).log10().mul(2).round());
+    player.family.cats[0]=player.family.cats[0].add(player.family.stats.wh.div(10).add(3).log10().mul(2).mul(player.influ.times.add(1).min(10)).round());
     getAchievement(1);
 }
 window.get_member = get_member;

@@ -4,7 +4,7 @@ import { player , REALM_DATA} from "./main.js";
 import { renderBuilding } from "./building.js";
 import { renderAchievement ,getAchievement} from "./achievement.js";
 import { EXP_LOCATIONS , get_battle_passrate , renderExplore} from "./explore.js";
-import { get_pending_influ } from "./influence.js";
+import { get_pending_influ , renderInfluMiles , renderInfluUpg} from "./influence.js";
 import Decimal from "./break_eternity.js";
 
 
@@ -18,12 +18,26 @@ function change_tab(target){
     //加载选项卡以及按钮激活
 }
 
+function change_subtab(target_s){
+    let cur_s = player.display.subtab[player.display.tab];
+    document.getElementById(`${player.display.tab}_${cur_s}_button`).classList.remove("subtab_button_active");
+    document.getElementById(`${player.display.tab}_${cur_s}_content`).style.display = 'none';
+    //卸载选项卡以及按钮激活
+    player.display.subtab[player.display.tab] = target_s;
+    document.getElementById(`${player.display.tab}_${target_s}_button`).classList.add("subtab_button_active");
+    document.getElementById(`${player.display.tab}_${target_s}_content`).style.display = 'block';
+    //加载选项卡以及按钮激活
+}
+
 window.change_tab = change_tab;
+
+window.change_subtab = change_subtab;
 
 /*
 progress1(ach.6):抵达万物级高等，解锁探索
 progress2(ach.9):通过练兵场-1，解锁灵矿/建筑
 progress3(ach.15):通过燕岗-1，解锁灵药
+progress4(ach.19):潮汐巅峰，解锁影响力
  */
 
 function renderGame(adt){
@@ -41,6 +55,16 @@ function renderGame(adt){
         case 'building':
             renderBuilding();
             break;
+        case 'influ':
+            switch (player.display.subtab.influ){
+                case 'mile':
+                    renderInfluMiles();
+                    break;
+                case 'upg':
+                    renderInfluUpg();
+                    break;
+            }
+            break;
         case 'achievement':
             renderAchievement();
             break;
@@ -55,6 +79,7 @@ function renderMain(adt){
     document.getElementById("autosave_monitor").innerText = player.time.save.toFixed(1);
     document.getElementById("main_birth_monitor").innerText = format_number(player.family.birt.mul(player.time.spd));
 
+    
     document.getElementById("time_cur").innerText = format_timept(player.time.cur);
     document.getElementById("time_spd").innerText = format_timedur(player.time.spd);
 
@@ -67,14 +92,14 @@ function renderMain(adt){
     if(player.achievement.list[19]){
         document.getElementById("total_influ").innerText = format_number(player.influ.points); 
         document.getElementById("pending_influ").innerText = format_number(get_pending_influ());
-        document.getElementById("influ_bonus").innerText = format_number(player.influ.points.mul(2).add(1).ln().add(1));
+        document.getElementById("reset_times").innerText = `第${format_number(player.influ.times.add(1))}轮回·`;
     }
     
 
 }
 function renderFamily(){
     let members = '';
-    document.getElementById("get_member_num").innerText = format_number(player.family.stats.wh.div(10).add(3).log10().mul(2).round())
+    document.getElementById("get_member_num").innerText = format_number(player.family.stats.wh.div(10).add(3).log10().mul(2).mul(player.influ.times.add(1).min(10)).round())
     
     
     for(let i=0;i<=player.family.maxrealm;i+=1){

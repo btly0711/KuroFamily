@@ -25,7 +25,7 @@
         <div id="reset_screen">
             <div id="influ_reset_screen">
                 <span style="color:#02FDEA">进行【影响力】重置</span>将会重置你的家族，探索进度/探索资源，乱时法阵。<br>
-                <span style="color:#02FDEA" id="pending_influ_screen">作为交换，你将得到 0 影响力</span>  <span class="realm_basic3">(需要至少40,000,000只潮汐级初等小猫)</span><br>
+                <span style="color:#02FDEA" id="pending_influ_screen">作为交换，你将得到 0 影响力</span>  <span class="realm_basic3">(需要至少40,000,000只潮汐级巅峰小猫)</span><br>
                 <span class="longer_button" onclick="cancel_influ_reset()" style="background-color:crimson">&nbsp; = 取 消 = &nbsp;</span>
                 &nbsp;
                 <span class="longer_button" onclick="commit_influ_reset()"  style="background-color:#02FDEA;color:black">&nbsp; = 重 置 = &nbsp;</span>
@@ -35,7 +35,7 @@
             <div id="achievement-toast-container"></div>
             <div id="left_row_content">
                 <div id="overall_satistics">
-                    纳可纪元<br>
+                     <span id="reset_times" style="color:#02FDEA"></span>纳可纪元<br>
                     <span id="time_cur">0纪0年0日000:00</span><br>
                     (流速 <span id="time_spd">10h</span>/s)<br><br>
                     <span id="tps_monitor">TPS:50.0(20.00)</span><br>
@@ -53,6 +53,9 @@
                     </div>
                     <div id="building_button" class="tab_button" onclick="change_tab('building')">
                         建设
+                    </div>
+                    <div id="influ_button" class="tab_button influ_button" onclick="change_tab('influ')">
+                        影响力
                     </div>
                     <div id="achievement_button" class="tab_button" onclick="change_tab('achievement')">
                         成就
@@ -134,6 +137,31 @@
                     <img src="image/build_tda.png"><span style="color:rgb(203, 163, 255)"> 乱时法阵 Lv.<span id="tda_level">0</span></span>  : 时间流速 <span style="color:rgb(203, 163, 255)" id="tda_effect">x1.00</span> . <span class="longer_button" onclick="build_tda()">升级 : <span id="tda_upgrade_ore" style="color:gray">1 灵矿</span>  ; <span id="tda_upgrade_wh" style="color:lightsalmon">10,000 wh</span> </span> </div>
                     
                 </div>
+                <div id="influ_content" style="display:none">
+                    <div id="influ_subtab_button">
+                        <span id="influ_mile_button" class="influ_button subtab_button" onclick="change_subtab('mile')">
+                            里程碑
+                        </span>&nbsp;
+                        <span id="influ_upg_button" class="influ_button subtab_button" onclick="change_subtab('upg')">
+                            升级
+                        </span>
+                    </div>
+                    <div id="influ_mile_content" style="display:none">
+                        你进行了 <span id="influ_reset_times" style="color:#02fdea"></span> 次影响力重置。<br><br>
+
+                        <div id="influ_miles_1" class="influ_miles_inactive">1 影响力重置 :<br>手动招募效果x(重置数+1),上限x10.</div>
+                        <div id="influ_miles_2" class="influ_miles_inactive">3 影响力重置 :<br>重置时保留(重置数)个乱时法阵.</div>
+                        <div id="influ_miles_3" class="influ_miles_inactive">6 影响力重置 :<br>重置时不再显示确认弹窗.</div>
+                        <div id="influ_miles_4" class="influ_miles_inactive">10 影响力重置 :<br>重置时保留探索进度.</div>
+                        <div id="influ_miles_5" class="influ_miles_inactive">15 影响力重置 :<br>重置时保留灵矿.</div>
+                        <div id="influ_miles_6" class="influ_miles_inactive">20 影响力重置 :<br>重置时保留灵药.</div>
+                    </div>
+                    <div id="influ_upg_content" style="display:none;color:#02fdea">
+                        [WIP:0.15移除]工时加成:<span id="influ_bonus">1.00</span>x</span>
+                        <br>
+                        纱雪要和小万出去玩了。今天来不及做升级了。明天做喵
+                    </div>
+                </div>
                 <div id="achievement_content" style="display:none">
                     目前得到了<span style="color:greenyellow" id="achi_num">0</span>个成就，全局工时*<span style="color:greenyellow" id="achi_bonus">1.00</span>.<br>
                     <div id="achievement_table">
@@ -173,7 +201,7 @@
                     <span id="bp_display_span"> &nbsp; <img src="image/res_bp.png"> 战力 : <b><span id="total_bp" style="color:gold"></span></b><br></span>
                     <span id="ore_display_span"> &nbsp; <img src="image/res_ore.png"> 灵矿 : <span id="total_ore" style="color:gray">0</span><br></span>
                     <span id="herb_display_span"> &nbsp; <img src="image/res_herb.png"> 灵药 : <span id="total_herb" style="color:limegreen">0</span><br></span>
-                    <span id="influ_display_span" style="color:#02fdea" onclick="try_influ_reset()"> &nbsp; <img src="image/res_influ.png"> 影响力 : <span id="total_influ" >0</span>(+<span id="pending_influ">0</span>)<br>[WIP:0.14移除]工时加成:<span id="influ_bonus">1.00</span>x</span>
+                    <span id="influ_display_span" style="color:#02fdea" onclick="try_influ_reset()"> &nbsp; <img src="image/res_influ.png"> 影响力 : <span id="total_influ" >0</span>(+<span id="pending_influ">0</span>)<br>
             </div>
         </div>
     </body>
