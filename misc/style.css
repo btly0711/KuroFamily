@@ -21,6 +21,16 @@ body{
 	font-weight: bold;
 }
 
+.realm_terra2{
+	color:#6DE789;
+	font-weight: bold;
+}
+
+.realm_terra3{
+	color:#60E4A9;
+	font-weight: bold;
+}
+
 .realm_sky{
 	color:#6FAEE4;
 	font-weight: bold;
@@ -184,6 +194,35 @@ body{
     width:300px;
     display:inline-block;
     background:radial-gradient(black,#02fdea);
+}
+.influ_upg_unbought{
+    height:64px;
+    margin-right:5px;
+    margin-bottom:5px;
+    border:1px solid #02fdea;
+    text-align:center;
+    width:64px;
+    display:inline-block;
+}
+.influ_upg_chosen{
+    height:64px;
+    margin-right:5px;
+    margin-bottom:5px;
+    border:1px solid #02fdea;
+    background-color: #656565;
+    text-align:center;
+    width:64px;
+    display:inline-block;
+}
+.influ_upg_bought{
+    height:64px;
+    margin-right:5px;
+    margin-bottom:5px;
+    border:1px solid #02fdea;
+    background-color: #96ff6580;
+    text-align:center;
+    width:64px;
+    display:inline-block;
 }
 
 .family_button{
@@ -496,4 +535,7 @@ body{
 .palace_core_location{
     background:linear-gradient(to right,#5b5951,#8776c8,#4d4c44,#5b5951,black,#5b5951,#4d4c44,#6ebe78,#5b5951);
     color:lightgray;
+}
+.forest_location{
+    background:linear-gradient(to right, green,lime,rgb(73, 119, 73),green,lime,green,rgb(72, 119, 72),lime,green);
 }

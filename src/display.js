@@ -1,6 +1,6 @@
 "use strict";
 
-import { player , REALM_DATA} from "./main.js";
+import { player , REALM_DATA ,get_birt_sc1} from "./main.js";
 import { renderBuilding } from "./building.js";
 import { renderAchievement ,getAchievement} from "./achievement.js";
 import { EXP_LOCATIONS , get_battle_passrate , renderExplore} from "./explore.js";
@@ -132,7 +132,7 @@ function renderWork(){
     document.getElementById("basic_reproduce").innerText = player.display.birt.basic;
 
     if(player.display.birt.scn>=1){
-        document.getElementById("1st_reproduce").innerText = "因为超过1c/h,生育率受到一重软上限(^0.6)限制,变为" + player.display.birt.sc1;
+        document.getElementById("1st_reproduce").innerText = "因为超过 "+format_chance_time(get_birt_sc1())+" ,生育率受到一重软上限(^0.6)限制,变为" + player.display.birt.sc1;
     }// 1p/h一重软上限
     else document.getElementById("1st_reproduce").innerText = "";
     document.getElementById("final_reproduce").innerText = format_number(player.family.birt.mul(player.time.spd))
@@ -192,7 +192,7 @@ function change_timedtb(realm,op,change){
             }
         }
         document.getElementById(`member_list_timerest_${realm}`).innerText = format_number(player.family.rdata[realm].timedtb.rt) + 'h\'';
-        document.getElementById(`member_list_time_drate_${realm}`).innerText = '死亡:x' + format_number(player.family.rdata[realm].timedtb.rt.add(2).div(62).pow(-0.8));
+        document.getElementById(`member_list_time_drate_${realm}`).innerText = '死亡:x' + format_number(player.family.rdata[realm].timedtb.rt.add(2+player.influ.upgs[4]?60:0)).div(62).pow(-0.8);//IU4(display)
         
     }
     if(op==2){
@@ -385,11 +385,11 @@ function format_timept(decimal){
     return str;
 }//时刻
 function format_chance_time(decimal){
-    if(decimal.gt(1)) return format_number(decimal) + ' c/m\'';
-    if(decimal.gt(1/60)) return format_number(decimal.mul(60)) + ' c/h\'';
-    if(decimal.gt(1/10800)) return format_number(decimal.mul(10800)) + ' c/w\'';
-    if(decimal.gt(1/5.4e5)) return format_number(decimal.mul(5.4e5)) + ' c/y\'';
-    if(decimal.gt(1/5.4e11)) return format_number(decimal.mul(5.4e9)) + ' c/j\'';
+    if(decimal.gte(1)) return format_number(decimal) + ' c/m\'';
+    if(decimal.gte(1/60)) return format_number(decimal.mul(60)) + ' c/h\'';
+    if(decimal.gte(1/10800)) return format_number(decimal.mul(10800)) + ' c/w\'';
+    if(decimal.gte(1/5.4e5)) return format_number(decimal.mul(5.4e5)) + ' c/y\'';
+    if(decimal.gte(1/5.4e11)) return format_number(decimal.mul(5.4e9)) + ' c/j\'';
     if(decimal.lte(0)) return '0';
     return '('+format_timedur(decimal.pow(-1)) +')⁻¹';
 }

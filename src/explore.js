@@ -23,7 +23,11 @@ const EXP_LOCATIONS = [
 ['地宫 - 2',new Decimal(7.2e9),new Decimal(2.65),7,"palace_location",new Decimal(277e4),new Decimal(4.25e4)],
 ['地宫 - 3',new Decimal(18e9),new Decimal(2.87),7,"palace_location",new Decimal(760e4),new Decimal(12.8e4)],
 ['地宫 - 4',new Decimal(48e9),new Decimal(3.10),8,"palace_location",new Decimal(2235e4),new Decimal(41.4e4)],
-['地宫核心 - 1',new Decimal(3.402823669e38),new Decimal(3.35),8,"palace_core_location",new Decimal(4280),new Decimal(36)],
+['地宫核心 - 1',new Decimal(200e9),new Decimal(3.35),8,"palace_core_location",new Decimal(1.074e8),new Decimal(229.7e4)],
+['地宫核心 - 2',new Decimal(750e9),new Decimal(3.62),8,"palace_core_location",new Decimal(4.598e8),new Decimal(1122e4)],
+['地宫核心 - 3',new Decimal(2440e9),new Decimal(3.90),8,"palace_core_location",new Decimal(16.07e8),new Decimal(4398e4)],
+['地宫核心 - 4',new Decimal(29.999e12),new Decimal(4.25),9,"palace_core_location",new Decimal(265.97e8),new Decimal(2.368e8)],
+['荒兽森林 - 1',new Decimal(3.402823669e38),new Decimal(3.35),9,"forest_location",new Decimal(4280),new Decimal(36)],
 ]
 //地点名,需求战力,环境乘数,解锁新境界,背景名,灵矿,灵药
 /*

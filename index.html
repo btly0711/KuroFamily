@@ -157,9 +157,16 @@
                         <div id="influ_miles_6" class="influ_miles_inactive">20 影响力重置 :<br>重置时保留灵药.</div>
                     </div>
                     <div id="influ_upg_content" style="display:none;color:#02fdea">
-                        [WIP:0.15移除]工时加成:<span id="influ_bonus">1.00</span>x</span>
                         <br>
-                        纱雪要和小万出去玩了。今天来不及做升级了。明天做喵
+                        <div id="influ_upg_1" class="influ_upg_unbought" onclick="BuyInfluUpg(1)"> <img src="image/upg/IU1.png"></div>
+                        <div id="influ_upg_2" class="influ_upg_bought" onclick="BuyInfluUpg(2)"> <img src="image/upg/IU2.png"></div>
+                        <div id="influ_upg_3" class="influ_upg_chosen" onclick="BuyInfluUpg(3)"> <img src="image/upg/IU3.png"></div>
+                        <div id="influ_upg_4" class="influ_upg_unbought" onclick="BuyInfluUpg(4)"> <img src="image/upg/IU4.png"></div>
+                        <div id="influ_upg_5" class="influ_upg_unbought" onclick="BuyInfluUpg(5)"> <img src="image/upg/IU5.png"></div><br>
+                        <span id="influ_upg_name">= 影响力升级 =</span><br>
+                        <span id="influ_upg_detail" style="color:gold">将鼠标放置到升级上查看相关信息!</span><br>
+                        <span id="influ_upg_price"></span><br>
+
                     </div>
                 </div>
                 <div id="achievement_content" style="display:none">
@@ -196,12 +203,12 @@
                 </div>
             </div>
             <div id="right_row_content">
-                    &nbsp; <img src="image/res_cat.png"> 喵口 : <span id="total_cat" style='color:pink'>0c</span><br>
-                    &nbsp; <img src="image/res_wh.png"> 工时 : <span id="total_workhour" style="color:lightblue">0wh/w'</span><br>
-                    <span id="bp_display_span"> &nbsp; <img src="image/res_bp.png"> 战力 : <b><span id="total_bp" style="color:gold"></span></b><br></span>
-                    <span id="ore_display_span"> &nbsp; <img src="image/res_ore.png"> 灵矿 : <span id="total_ore" style="color:gray">0</span><br></span>
-                    <span id="herb_display_span"> &nbsp; <img src="image/res_herb.png"> 灵药 : <span id="total_herb" style="color:limegreen">0</span><br></span>
-                    <span id="influ_display_span" style="color:#02fdea" onclick="try_influ_reset()"> &nbsp; <img src="image/res_influ.png"> 影响力 : <span id="total_influ" >0</span>(+<span id="pending_influ">0</span>)<br>
+                    &nbsp; <img src="image/res/res_cat.png"> 喵口 : <span id="total_cat" style='color:pink'>0c</span><br>
+                    &nbsp; <img src="image/res/res_wh.png"> 工时 : <span id="total_workhour" style="color:lightblue">0wh/w'</span><br>
+                    <span id="bp_display_span"> &nbsp; <img src="image/res/res_bp.png"> 战力 : <b><span id="total_bp" style="color:gold"></span></b><br></span>
+                    <span id="ore_display_span"> &nbsp; <img src="image/res/res_ore.png"> 灵矿 : <span id="total_ore" style="color:gray">0</span><br></span>
+                    <span id="herb_display_span"> &nbsp; <img src="image/res/res_herb.png"> 灵药 : <span id="total_herb" style="color:limegreen">0</span><br></span>
+                    <span id="influ_display_span" style="color:#02fdea" onclick="try_influ_reset()"> &nbsp; <img src="image/res/res_influ.png"> 影响力 : <span id="total_influ" >0</span>(+<span id="pending_influ">0</span>)<br>
             </div>
         </div>
     </body>

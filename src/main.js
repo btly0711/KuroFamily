@@ -6,7 +6,7 @@ import {update_building} from "./building.js";
 import {LoadAchievement,getAchievement , RefreshLockedContent} from "./achievement.js";
 import {ReloadInfluMilestones} from "./influence.js";
 import Decimal from "./break_eternity.js";
-const GAME_VERSION = 'V0.14';
+const GAME_VERSION = 'V0.15';
 let player ={
     time:{
         cur:new Decimal(0),//存储单位:分钟
@@ -89,6 +89,8 @@ let player ={
         points:new Decimal(0),//影响力
         times:new Decimal(0),//重置次数
         miles:{},
+        upgs:{},
+        checking_upg:0,
         reseting:0,//重置标记，防止家族猫浑水摸鱼
     },
     achievement:{
@@ -121,6 +123,9 @@ function complete_data(){
     //0.14↓
     if(!player.display.subtab) player.display.subtab ={influ:"mile",};
     if(!player.influ.miles) player.influ.miles = {};
+    //0.15↓
+    if(!player.influ.upgs) player.influ.upgs={};
+    if(!player.influ.checking_upg) player.influ.checking_upg=0;
 }//最多同时兼容10个版本
 function complete_achievements(){
     //0.11↓
@@ -204,10 +209,12 @@ const REALM_DATA = [
     ["潮汐级初等",'basic3',4e-8,1e-7,10,6],
     ["潮汐级高等",'basic3',1e-8,1e-7,20,7],
     ["潮汐级巅峰",'basic3',1e-9,1e-7,40,8],
+    ["大地级初期",'terra',1e-9,2e-9,1000,9],
 
 ]//等级名，颜色，突破率，死亡率，工时，境界编号
 function update_game_spd(){
     player.time.spd = (new Decimal(300)).mul(player.build.tda.effect);
+    if(player.influ.upgs[1]) player.time.spd=player.time.spd.mul(2);//IU1 时速加成
     //player.time.spd = player.time.spd.mul(1.03);
 }
 
@@ -232,7 +239,7 @@ function update_family(dt){
 function update_family_rdata(){
     let wh_n = new Decimal(0),cnt_n = new Decimal(0);//计数
     let wh_bonus = (new Decimal(1.01)).pow(player.achievement.total);//成就加成
-    wh_bonus = wh_bonus.mul(player.influ.points.mul(2).add(1).ln().add(1));//影响力-工时加成(WIP/0.14待删除)
+    if(player.influ.upgs[1]) wh_bonus=wh_bonus.mul(2);//IU1 工时加成
     for(let i=0;i<=player.family.realmcap;i+=1){
         player.family.rdata[i] ||= {};
         if(player.family.rdata[i].timedtb == undefined) player.family.rdata[i].timedtb = {
@@ -242,7 +249,7 @@ function update_family_rdata(){
         };
         player.family.rdata[i].br = new Decimal(REALM_DATA[i][2]).mul(player.family.rdata[i].timedtb.ct.div(60).pow(0.8)).mul(player.explore.b_mul);//修炼时间乘数 | 探索乘数
         player.family.rdata[i].br = player.family.rdata[i].br.mul(player.resources.herb.mul(1e4).div(player.family.stats.cnt.add(0.01)).add(1).ln().pow(0.8).mul(0.1).add(1));//灵药乘数
-        player.family.rdata[i].dd = new Decimal(REALM_DATA[i][3]).mul(player.family.rdata[i].timedtb.rt.add(2).div(62).pow(-0.8));
+        player.family.rdata[i].dd = new Decimal(REALM_DATA[i][3]).mul(player.family.rdata[i].timedtb.rt.add(2+(player.influ.upgs[4]?60:0)).div(62).pow(-0.8));//IU4(实际)
         player.family.rdata[i].wk = new Decimal(REALM_DATA[i][4]).mul(player.family.rdata[i].timedtb.wk).mul(wh_bonus);//默认60h工作/d
 
         //以后这里会有乘数
@@ -310,6 +317,11 @@ function calculate_family_bd(gt){//gametime passed
     player.family.cats[0] = player.family.cats[0].add(nrate);
     //计算出生
 }
+function get_birt_sc1(){
+    let ans = new Decimal(1/60);
+    if(player.influ.upgs[2]) ans = ans.mul(player.influ.points.add(1).pow(1/3).mul(3));//IU2
+    return ans;
+}
 function update_work(){
     //work_reproduce
     let reproduce_workhour = player.family.stats.wh.mul(player.work.reproduce);//wh/w
@@ -319,8 +331,11 @@ function update_work(){
 
     player.display.birt.basic = format_chance_time(reproduce_workhour);
     player.display.birt.scn=0;
-    if(reproduce_workhour.gt(1/60)){
-        reproduce_workhour = reproduce_workhour.mul(60).pow(0.6).div(60);
+
+    let birt_sc1 = get_birt_sc1();
+
+    if(reproduce_workhour.gt(birt_sc1)){
+        reproduce_workhour = reproduce_workhour.div(birt_sc1).pow(0.6).mul(birt_sc1);
         player.display.birt.scn=1;
         player.display.birt.sc1 = format_chance_time(reproduce_workhour);
         getAchievement(12);
@@ -441,4 +456,4 @@ document.getElementById("load-file-input").addEventListener("change", (e) => {
 
 
 
-export {player,REALM_DATA};
+export {player,REALM_DATA , get_birt_sc1};
