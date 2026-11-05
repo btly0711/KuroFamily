@@ -192,7 +192,9 @@ function change_timedtb(realm,op,change){
             }
         }
         document.getElementById(`member_list_timerest_${realm}`).innerText = format_number(player.family.rdata[realm].timedtb.rt) + 'h\'';
-        document.getElementById(`member_list_time_drate_${realm}`).innerText = '死亡:x' + format_number(player.family.rdata[realm].timedtb.rt.add(2+player.influ.upgs[4]?60:0)).div(62).pow(-0.8);//IU4(display)
+        let ex_rt = 2;
+        if(player.influ.upgs[4]) ex_rt = 62;//IU4(display)
+        document.getElementById(`member_list_time_drate_${realm}`).innerText = '死亡:x' + format_number(player.family.rdata[realm].timedtb.rt.add(ex_rt).div(62).pow(-0.8));
         
     }
     if(op==2){
