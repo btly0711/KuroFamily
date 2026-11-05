@@ -6,7 +6,7 @@ import {update_building} from "./building.js";
 import {LoadAchievement,getAchievement , RefreshLockedContent} from "./achievement.js";
 import {ReloadInfluMilestones} from "./influence.js";
 import Decimal from "./break_eternity.js";
-const GAME_VERSION = 'V0.15';
+const GAME_VERSION = 'V0.15a';
 let player ={
     time:{
         cur:new Decimal(0),//存储单位:分钟
@@ -208,8 +208,8 @@ const REALM_DATA = [
     ["万物级巅峰",'basic2',3e-7,1e-6,4,5],
     ["潮汐级初等",'basic3',4e-8,1e-7,10,6],
     ["潮汐级高等",'basic3',1e-8,1e-7,20,7],
-    ["潮汐级巅峰",'basic3',1e-9,1e-7,40,8],
-    ["大地级初期",'terra',1e-9,2e-9,1000,9],
+    ["潮汐级巅峰",'basic3',1e-10,1e-7,40,8],
+    ["大地级初期",'terra',1e-10,2e-9,1000,9],
 
 ]//等级名，颜色，突破率，死亡率，工时，境界编号
 function update_game_spd(){
