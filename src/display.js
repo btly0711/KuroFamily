@@ -1,6 +1,6 @@
 "use strict";
 
-import { player , REALM_DATA ,get_birt_sc1} from "./main.js";
+import { player , REALM_DATA ,get_birt_sc1 , get_birt_sc2} from "./main.js";
 import { renderBuilding } from "./building.js";
 import { renderAchievement ,getAchievement} from "./achievement.js";
 import { EXP_LOCATIONS , get_battle_passrate , renderExplore} from "./explore.js";
@@ -40,11 +40,11 @@ progress3(ach.15):通过燕岗-1，解锁灵药
 progress4(ach.19):潮汐巅峰，解锁影响力
  */
 
-function renderGame(adt){
+function renderGame(adt,dt){
     renderMain(adt);
     switch (player.display.tab){
         case 'family':
-            renderFamily();
+            renderFamily(player.time.spd.mul(dt));
             break;
         case 'work':
             renderWork();
@@ -97,13 +97,17 @@ function renderMain(adt){
     
 
 }
-function renderFamily(){
+function renderFamily(gt){
     let members = '';
     document.getElementById("get_member_num").innerText = format_number(player.family.stats.wh.div(10).add(3).log10().mul(2).mul(player.influ.times.add(1).min(10)).round())
     
     
     for(let i=0;i<=player.family.maxrealm;i+=1){
-        document.getElementById(`member_list_count_${i}`).innerText = format_number(player.family.cats[i]);
+        let bdrate = player.family.rdata[i].br.mul(gt).add(player.family.rdata[i].dd.mul(gt));
+        if(bdrate.gte(1)) document.getElementById(`member_list_count_${i}`).innerText =  '※' + format_number(player.family.cats[i].div(bdrate).round());
+        else document.getElementById(`member_list_count_${i}`).innerText = format_number(player.family.cats[i]);
+        //WIP:如果不稳定那么带※
+
         //document.getElementById(`member_list_break_${i}`).innerText = '('+format_timedur(player.family.rdata[i].br.pow(-1)) + ')⁻¹';
         //document.getElementById(`member_list_death_${i}`).innerText = '('+format_timedur(player.family.rdata[i].dd.pow(-1)) + ')⁻¹';
         let brate = player.family.rdata[i].br.mul(player.time.spd).div(50);
@@ -115,6 +119,7 @@ function renderFamily(){
         document.getElementById(`member_list_ttldeath_${i}`).innerText = format_number(dr_m.mul(player.family.cats[i]));
         document.getElementById(`member_list_work_${i}`).innerText = format_number(player.family.rdata[i].wk) + '/c';
         document.getElementById(`member_list_ttlwork_${i}`).innerText = format_number(player.family.rdata[i].wk.mul(player.family.cats[i]));
+        document.getElementById(`member_list_time_drate_${i}`).innerText = '死亡:x' + format_number(player.family.rdata[i].timedtb.rt.add((player.influ.upgs[4])?62:2).div(62).pow(-0.8));
 
     }
     //console.log('family rended');
@@ -132,9 +137,13 @@ function renderWork(){
     document.getElementById("basic_reproduce").innerText = player.display.birt.basic;
 
     if(player.display.birt.scn>=1){
-        document.getElementById("1st_reproduce").innerText = "因为超过 "+format_chance_time(get_birt_sc1())+" ,生育率受到一重软上限(^0.6)限制,变为" + player.display.birt.sc1;
+        document.getElementById("1st_reproduce").innerHTML = "<br>因为超过 "+format_chance_time(get_birt_sc1())+" ,生育率受到一重软上限(^0.6)限制,变为" + player.display.birt.sc1;
     }// 1p/h一重软上限
-    else document.getElementById("1st_reproduce").innerText = "";
+    else document.getElementById("1st_reproduce").innerHTML = "";
+    if(player.display.birt.scn>=2){
+        document.getElementById("2nd_reproduce").innerHTML = "<br>因为超过 "+format_chance_time(get_birt_sc2())+" ,生育率受到二重软上限(^0.5)限制,变为" + player.display.birt.sc2;
+    }// 1p/h一重软上限
+    else document.getElementById("2nd_reproduce").innerHTML = "";
     document.getElementById("final_reproduce").innerText = format_number(player.family.birt.mul(player.time.spd))
 
 
@@ -192,9 +201,6 @@ function change_timedtb(realm,op,change){
             }
         }
         document.getElementById(`member_list_timerest_${realm}`).innerText = format_number(player.family.rdata[realm].timedtb.rt) + 'h\'';
-        let ex_rt = 2;
-        if(player.influ.upgs[4]) ex_rt = 62;//IU4(display)
-        document.getElementById(`member_list_time_drate_${realm}`).innerText = '死亡:x' + format_number(player.family.rdata[realm].timedtb.rt.add(ex_rt).div(62).pow(-0.8));
         
     }
     if(op==2){
@@ -396,4 +402,6 @@ function format_chance_time(decimal){
     return '('+format_timedur(decimal.pow(-1)) +')⁻¹';
 }
 
-export {renderGame, renderFamilyMembers,renderExploreLocation,format_number,format_chance_time,format_timedur};
+export {renderGame, renderFamilyMembers,renderExploreLocation,format_number,format_chance_time,format_timedur,
+    change_timedtb
+};

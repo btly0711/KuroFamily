@@ -26,8 +26,16 @@ const EXP_LOCATIONS = [
 ['地宫核心 - 1',new Decimal(200e9),new Decimal(3.35),8,"palace_core_location",new Decimal(1.074e8),new Decimal(229.7e4)],
 ['地宫核心 - 2',new Decimal(750e9),new Decimal(3.62),8,"palace_core_location",new Decimal(4.598e8),new Decimal(1122e4)],
 ['地宫核心 - 3',new Decimal(2440e9),new Decimal(3.90),8,"palace_core_location",new Decimal(16.07e8),new Decimal(4398e4)],
-['地宫核心 - 4',new Decimal(29.999e12),new Decimal(4.25),9,"palace_core_location",new Decimal(265.97e8),new Decimal(2.368e8)],
-['荒兽森林 - 1',new Decimal(3.402823669e38),new Decimal(3.35),9,"forest_location",new Decimal(4280),new Decimal(36)],
+['地宫核心 - 4',new Decimal(29.999e12),new Decimal(4.20),9,"palace_core_location",new Decimal(265.97e8),new Decimal(9.387e8)],
+['荒兽森林 - 1',new Decimal(108e12),new Decimal(4.55),9,"forest_location",new Decimal(1088e8),new Decimal(43.66e8)],
+['荒兽森林 - 2',new Decimal(540e12),new Decimal(4.90),9,"forest_location",new Decimal(6390e8),new Decimal(301.2e8)],
+['荒兽森林 - 3',new Decimal(2700e12),new Decimal(5.30),9,"forest_location",new Decimal(3.754e12),new Decimal(2078e8)],
+['荒兽森林 - 4',new Decimal(13500e12),new Decimal(5.75),10,"forest_location",new Decimal(22.047e12),new Decimal(1.4335e12)],
+['清野江畔 - 1',new Decimal(12e16),new Decimal(6.20),10,"river_location",new Decimal(243.8e12),new Decimal(19.72e12)],
+['清野江畔 - 2',new Decimal(72e16),new Decimal(6.65),10,"river_location",new Decimal(1750e12),new Decimal(169.3e12)],
+['清野江畔 - 3',new Decimal(432e16),new Decimal(7.15),10,"river_location",new Decimal(12560e12),new Decimal(1454e12)],
+['清野江畔 - 4',new Decimal(2592e16),new Decimal(7.80),11,"river_location",new Decimal(9.01e16),new Decimal(12484e12)],
+['纳家秘境 - 1',new Decimal(3.402823669e38),new Decimal(6.25),10,"secret_location",new Decimal(114514),new Decimal(114514)],
 ]
 //地点名,需求战力,环境乘数,解锁新境界,背景名,灵矿,灵药
 /*
@@ -54,11 +62,11 @@ function update_explore(dt){
     }
     else player.explore.trt = player.explore.trt.add(player.time.spd.mul(dt));
     player.display.explore.trt = format_timedur(player.explore.trt);
-    player.explore.trp = DC_1.minus(DC_E.pow(DC_M1.div(600).mul(player.explore.trt).mul(player.explore.wh.pow(-0.32))))
+    player.explore.trp = DC_1.minus(DC_E.pow(DC_M1.div(600).mul(player.explore.trt.mul((new Decimal(1.25)).pow(player.build.level.btf))).mul(player.explore.wh.pow(-0.32))))
     //1-e^(-Ctb^(-a)) a=1/4 C=τ0=10h
     player.display.explore.trp = format_number(player.explore.trp.mul(100)) + '%';
 
-    player.explore.bb = player.explore.wh.mul(player.explore.trp).add(1);
+    player.explore.bb = player.explore.wh.mul(player.explore.trp).add(1).mul((new Decimal(1.50)).pow(player.build.level.btf));
     player.display.explore.bb = format_number(player.explore.bb) + 'ψ';
 
     player.display.explore.pr = format_number(get_battle_passrate().mul(100)) + '%';
@@ -122,6 +130,15 @@ function renderExplore(){
     document.getElementById("training_time").innerText = player.display.explore.trt;
     document.getElementById("training_power").innerText = player.display.explore.trp;
     document.getElementById("explore_battle_power").innerText = player.display.explore.bb;
+
+    if(player.build.level.btf.gte(1)){
+        document.getElementById("btf_speed").innerText = `(${format_number((new Decimal(1.25)).pow(player.build.level.btf))}x)`
+        document.getElementById("btf_power").innerText = `(${format_number((new Decimal(1.50)).pow(player.build.level.btf))}x)`;
+    }
+    else{
+        document.getElementById("btf_speed").innerText = ``;
+        document.getElementById("btf_power").innerText = ``;
+    }
 
 
     document.getElementById("explore_success_chance").innerText = player.display.explore.pr;

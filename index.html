@@ -99,17 +99,18 @@
 
                     <span style='color:lightgreen;font-weight:bold'>生育计划 (基础 1c/1920wh): <br>
                     
-                    <span id="reproduce_workhour">0wh/w'</span> ~ <span id="basic_reproduce">0c/w'</span><br>
-                    <span id="1st_reproduce" style="color:yellow"></span><br>
-                    计算流速后 : <span id="final_reproduce"> 0 </span> c/s
+                    <span id="reproduce_workhour">0wh/w'</span> ~ <span id="basic_reproduce">0c/w'</span>
+                    <span id="1st_reproduce" style="color:yellow"></span>
+                    <span id="2nd_reproduce" style="color:orange"></span>
+                    <br>计算流速后 : <span id="final_reproduce"> 0 </span> c/s
                     
                     </span>
                 </div>
                 <div id="explore_content" style="display:none">
                     探索工时 : <span id="explore_workhour" style="color:lightgoldenrodyellow"></span><br>
-                    训练时间 : <span id="training_time"></span>(小队越强，需要训练越多)<br>
+                    训练时间 : <span id="training_time"></span> <span id="btf_speed" style="color:#02fdea"></span>(战力↑ 训练需求↑)<br>
                     训练效果 : <b><span id="training_power"></span></b></span><br>
-                    探索小队战力 : <b><span id="explore_battle_power" style="color:gold"></span></b><br><br>
+                    探索小队战力 : <b><span id="explore_battle_power" style="color:gold"></span></b> <span id="btf_power" style="color:#02fdea"></span><br><br>
 
                     目前 <span id="explore_class">探索</span> 地点 : <b><span class="simple_button" onclick="location_change(-1)"> - </span> / <span class="simple_button" onclick="location_fight()" style="background-color:crimson">战斗</span> / <span class="simple_button" onclick="location_change(1)">+</span></b><br><br>
                     <div id="explore_location_div">
@@ -134,7 +135,10 @@
                     </div>
                     <br><br>
                     <div id="tda_div">
-                    <img src="image/build_tda.png"><span style="color:rgb(203, 163, 255)"> 乱时法阵 Lv.<span id="tda_level">0</span></span>  : 时间流速 <span style="color:rgb(203, 163, 255)" id="tda_effect">x1.00</span> . <span class="longer_button" onclick="build_tda()">升级 : <span id="tda_upgrade_ore" style="color:gray">1 灵矿</span>  ; <span id="tda_upgrade_wh" style="color:lightsalmon">10,000 wh</span> </span> </div>
+                    <img src="image/build_tda.png"><span style="color:rgb(203, 163, 255)"> <span id="tda_scale"></span>乱时法阵 Lv.<span id="tda_level">0</span></span>  :  <span style="color:rgb(203, 163, 255)" id="tda_effect">时间流速 x1.00</span> . <span class="longer_button" onclick="build_tda()">升级 : <span id="tda_upgrade_ore" style="color:gray">1 灵矿</span>  ; <span id="tda_upgrade_wh" style="color:lightsalmon">10,000 wh</span> </span> </div>
+                    <br>
+                    <div id="btf_div">
+                    <img src="image/build_btf.png"><span style="color:rgb(255, 240, 158)"> 训练场 Lv.<span id="btf_level">0</span></span>  :  <span style="color:rgb(255, 240, 158)" id="btf_effect">训练速度 1x, 战力上限 1x</span> . <span class="longer_button" onclick="build_btf()">升级 : <span id="btf_upgrade_ore" style="color:gray">100亿 灵矿</span>  ; <span id="btf_upgrade_herb" style="color:limegreen">10亿 灵药</span>; <span id="btf_upgrade_wh" style="color:lightsalmon">1京 wh</span> </span> </div>
                     
                 </div>
                 <div id="influ_content" style="display:none">

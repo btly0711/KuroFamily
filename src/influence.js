@@ -4,12 +4,15 @@ import { player ,REALM_DATA} from "./main.js";
 
 import { updateRealmcap} from "./explore.js";
 import {showAchievementToast} from "./achievement.js";
-import {format_number,renderFamilyMembers , renderExploreLocation} from "./display.js";
+import {format_number,renderFamilyMembers , renderExploreLocation , change_timedtb} from "./display.js";
 import Decimal from "./break_eternity.js";
 function get_pending_influ(){
     let eff_cats = new Decimal(0);
-    if(player.family.cats[8]) eff_cats=  eff_cats.add(player.family.cats[8]);
-    if(player.influ.upgs[3]) if(player.family.cats[9]) eff_cats =  eff_cats.add(player.family.cats[9].mul(100));//IU3
+    if(player.family.cats[8]) eff_cats = eff_cats.add(player.family.cats[8]);
+    if(player.influ.upgs[3]){if(player.family.cats[9]) eff_cats =  eff_cats.add(player.family.cats[9].mul(10));
+        if(player.family.cats[10]) eff_cats =  eff_cats.add(player.family.cats[10].mul(40));
+        if(player.family.cats[11]) eff_cats =  eff_cats.add(player.family.cats[11].mul(200));
+    }//IU3
     return eff_cats.div(4e7).pow(0.5).floor();
 }
 function try_influ_reset(){
@@ -90,7 +93,7 @@ function reset_explore(){
 function reset_building(){
     player.build.wt = {status:'none',progress:new Decimal(0),prog_max:new Decimal(1)};
     let tda_lv = new Decimal(0);
-    if(player.influ.miles[2]) tda_lv = player.build.tda.level.min(player.influ.times);//保留一些乱时
+    if(player.influ.miles[2]) tda_lv = player.build.level.tda.min(player.influ.times);//保留一些乱时
     player.build.tda = {level:tda_lv,price:(new Decimal(5)).pow(tda_lv),effect:(new Decimal(1.5)).pow(tda_lv)};
 }
 function reset_resources(){
@@ -133,8 +136,8 @@ document.addEventListener('mouseover', (e) => {
 const INFLU_UPG = [
     [0,new Decimal(0),"= 影响力升级 =","将鼠标放置到升级上查看相关信息!"],
     [1,new Decimal(1),"新手大礼包","时间流速*2,每猫工时*2"],
-    [2,new Decimal(5),"影响->生育","一重生育软上限延后3cbrt(影响力+1)倍"],
-    [3,new Decimal(20),"扩大影响","大地级一阶小猫在影响力获取计算中记作100个潮汐级巅峰"],
+    [2,new Decimal(5),"影响->生育","一重生育软上限延后3cbrt(影响力+1)倍,上限600倍."],
+    [3,new Decimal(20),"扩大影响","大地级初等|高等|巅峰小猫在影响力获取计算中记作10|40|200个潮汐级巅峰"],
     [4,new Decimal(80),"冥想法","所有小猫的休息时间>死亡率公式中有效休息时间+60h'"],
     [5,new Decimal(233),"加强训练","解锁训练场[WIP]"],
 ];
@@ -165,6 +168,12 @@ function BuyInfluUpg(iu){
     player.influ.upgs[iu]=1;
     player.influ.points = player.influ.points.sub(INFLU_UPG[iu][1]);
     
+    if(iu==4){
+        for(ri=0;ri<=player.family.maxrealm;ri++){
+            change_timedtb(ri,1,0);//不改变，但刷新
+        }
+    }
+
     showAchievementToast([`购买了新的影响力升级！`,`[ ${INFLU_UPG[iu][2]} ]`],"influ-toast");
 }
 window.BuyInfluUpg = BuyInfluUpg;

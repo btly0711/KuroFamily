@@ -539,3 +539,13 @@ body{
 .forest_location{
     background:linear-gradient(to right, green,lime,rgb(73, 119, 73),green,lime,green,rgb(72, 119, 72),lime,green);
 }
+.river_location{
+    background:linear-gradient(to right,lime, cyan,lime,lightgreen,gray,green);
+    color:crimson;
+	-webkit-text-stroke: 0.5px crimson;
+}
+.secret_location{
+    background:linear-gradient(to right,cyan,skyblue,lightgreen,lime,lightgreen,skyblue,cyan);
+    color:violet;
+	-webkit-text-stroke: 0.5px violet;
+}

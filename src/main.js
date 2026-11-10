@@ -2,11 +2,11 @@
 
 import {renderGame, renderFamilyMembers,renderExploreLocation,format_number,format_chance_time} from "./display.js";
 import {update_explore, updateRealmcap} from "./explore.js";
-import {update_building} from "./building.js";
+import {update_building , get_tda_effect} from "./building.js";
 import {LoadAchievement,getAchievement , RefreshLockedContent} from "./achievement.js";
 import {ReloadInfluMilestones} from "./influence.js";
 import Decimal from "./break_eternity.js";
-const GAME_VERSION = 'V0.15b';
+const GAME_VERSION = 'V0.16';
 let player ={
     time:{
         cur:new Decimal(0),//存储单位:分钟
@@ -24,6 +24,7 @@ let player ={
             wh:"0wh/w'",
             basic:"0c/w'",
             sc1:"0c/w'",
+            sc2:"0c/w'",
             scn:0,
         },
         explore:{
@@ -78,11 +79,10 @@ let player ={
             progress:new Decimal(0),//建筑已投入工作量
             prog_max:new Decimal(1),//建筑需要工作量
         },
-        tda:{
-            level:new Decimal(0),//等级
-            price:new Decimal(1),//价格(灵矿)
-            effect:new Decimal(1),//效果(时速)
-        }
+        level:{
+            tda:new Decimal(0),//time distort arrya
+            btf:new Decimal(0),//battle training field
+        },
 //0待机1工作中//time distorting array@乱时法阵
     },
     influ:{
@@ -126,6 +126,11 @@ function complete_data(){
     //0.15↓
     if(!player.influ.upgs) player.influ.upgs={};
     if(!player.influ.checking_upg) player.influ.checking_upg=0;
+    //0.16↓
+    if(!player.display.birt.sc2) player.display.birt.sc2 = '0c/w';
+    if(!player.build.level){
+        player.build.level = {tda :player.build.tda.level,btf :new Decimal(0)};
+    }
 }//最多同时兼容10个版本
 function complete_achievements(){
     //0.11↓
@@ -141,8 +146,8 @@ function complete_achievements(){
     if(EP>=4) getAchievement(10);
     if(EP>=12) getAchievement(17);
 
-    if(player.build.tda.level.gte(1)) getAchievement(14);
-    if(player.build.tda.level.gte(13)) getAchievement(20);
+    if(player.build.level.tda.gte(1)) getAchievement(14);
+    if(player.build.level.tda.gte(13)) getAchievement(20);
 
     if(player.resources.herb.gt(0)) getAchievement(15);
 }
@@ -173,7 +178,7 @@ function prepareGame(){
         lastTime = now;
         if(dt>=1000) dt=1000;
         updateGame(dt / 1000);
-        renderGame(adt / 10000); 
+        renderGame(adt / 10000,dt / 1000); 
     },1000/tickspeed);
 }
 
@@ -209,12 +214,19 @@ const REALM_DATA = [
     ["潮汐级初等",'basic3',4e-8,1e-7,10,6],
     ["潮汐级高等",'basic3',1e-8,1e-7,20,7],
     ["潮汐级巅峰",'basic3',1e-10,1e-7,40,8],
-    ["大地级初期",'terra',1e-10,2e-9,1000,9],
+    ["大地级初等",'terra',6e-11,2e-9,1000,9],
+    ["大地级高等",'terra',1e-11,2e-9,4000,10],// x4.
+    ["大地级巅峰",'terra',1e-12,2e-9,20000,11],// x16.
 
 ]//等级名，颜色，突破率，死亡率，工时，境界编号
+//基础：1 2 4 10
+//绿色 1 4 20 100
+
 function update_game_spd(){
-    player.time.spd = (new Decimal(300)).mul(player.build.tda.effect);
+    player.time.spd = (new Decimal(300)).mul(get_tda_effect());
     if(player.influ.upgs[1]) player.time.spd=player.time.spd.mul(2);//IU1 时速加成
+    let devspeed = new Decimal(1);
+    player.time.spd = player.time.spd.mul(devspeed);
     //player.time.spd = player.time.spd.mul(1.03);
 }
 
@@ -248,7 +260,7 @@ function update_family_rdata(){
             ct:new Decimal(60),
         };
         player.family.rdata[i].br = new Decimal(REALM_DATA[i][2]).mul(player.family.rdata[i].timedtb.ct.div(60).pow(0.8)).mul(player.explore.b_mul);//修炼时间乘数 | 探索乘数
-        player.family.rdata[i].br = player.family.rdata[i].br.mul(player.resources.herb.mul(1e4).div(player.family.stats.cnt.add(0.01)).add(1).ln().pow(0.8).mul(0.1).add(1));//灵药乘数
+        if(i<=8) player.family.rdata[i].br = player.family.rdata[i].br.mul(player.resources.herb.mul(1e4).div(player.family.stats.cnt.add(0.01)).add(1).ln().pow(0.8).mul(0.1).add(1));//灵药乘数-basic
         player.family.rdata[i].dd = new Decimal(REALM_DATA[i][3]).mul(player.family.rdata[i].timedtb.rt.add(2+(player.influ.upgs[4]?60:0)).div(62).pow(-0.8));//IU4(实际)
         player.family.rdata[i].wk = new Decimal(REALM_DATA[i][4]).mul(player.family.rdata[i].timedtb.wk).mul(wh_bonus);//默认60h工作/d
 
@@ -282,6 +294,7 @@ function calculate_family_bd(gt){//gametime passed
                 player.family.maxrealm += 1;//扩展境界最大值
                 player.family.cats[i+1] = brate;
                 renderFamilyMembers();
+                change_timedtb(i,1,0);//刷新死亡倍率
                 let MR = player.family.maxrealm;
                 if(MR==3) getAchievement(5);
                 if(MR==4) getAchievement(6);
@@ -319,7 +332,11 @@ function calculate_family_bd(gt){//gametime passed
 }
 function get_birt_sc1(){
     let ans = new Decimal(1/60);
-    if(player.influ.upgs[2]) ans = ans.mul(player.influ.points.add(1).pow(1/3).mul(3));//IU2
+    if(player.influ.upgs[2]) ans = ans.mul(player.influ.points.add(1).pow(1/3).mul(3).min(600));//IU2
+    return ans;
+}
+function get_birt_sc2(){
+    let ans = new Decimal(10000);
     return ans;
 }
 function update_work(){
@@ -333,14 +350,22 @@ function update_work(){
     player.display.birt.scn=0;
 
     let birt_sc1 = get_birt_sc1();
-
     if(reproduce_workhour.gt(birt_sc1)){
         reproduce_workhour = reproduce_workhour.div(birt_sc1).pow(0.6).mul(birt_sc1);
         player.display.birt.scn=1;
         player.display.birt.sc1 = format_chance_time(reproduce_workhour);
         getAchievement(12);
-    }// 1p/h一重软上限
+    }// 1c/h' (+)一重^0.6软上限
     else player.display.birt.sc1 = "";
+
+    let birt_sc2 = get_birt_sc2();
+    if(reproduce_workhour.gt(birt_sc2)){
+        reproduce_workhour = reproduce_workhour.div(birt_sc2).pow(0.5).mul(birt_sc2);
+        player.display.birt.scn=2;
+        player.display.birt.sc2 = format_chance_time(reproduce_workhour);
+    }// 100c/m'二重^0.5软上限
+    else player.display.birt.sc2 = "";
+
     player.family.birt = reproduce_workhour;// p/m单位
 }
 function get_member(){
@@ -456,4 +481,4 @@ document.getElementById("load-file-input").addEventListener("change", (e) => {
 
 
 
-export {player,REALM_DATA , get_birt_sc1};
+export {player,REALM_DATA , get_birt_sc1 ,get_birt_sc2};
