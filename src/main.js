@@ -6,7 +6,7 @@ import {update_building , get_tda_effect} from "./building.js";
 import {LoadAchievement,getAchievement , RefreshLockedContent} from "./achievement.js";
 import {ReloadInfluMilestones} from "./influence.js";
 import Decimal from "./break_eternity.js";
-const GAME_VERSION = 'V0.16';
+const GAME_VERSION = 'V0.17';
 let player ={
     time:{
         cur:new Decimal(0),//存储单位:分钟
@@ -32,6 +32,13 @@ let player ={
             trp:"0.0%",//训练效果
             bb:"0ψ",//ψ长得像三叉戟，所以是战力单位
             pr:"0.0%",//pass rate通过率(上述4个中唯一一个不懒更新的)
+        },
+        blocktoast:{
+            "battle-toast-win":0,
+            "battle-toast-lose":0,
+            "influ-toast":0,
+            "build-toast":0,
+            "achi-toast":0,
         }
     },
     family:{
@@ -128,9 +135,9 @@ function complete_data(){
     if(!player.influ.checking_upg) player.influ.checking_upg=0;
     //0.16↓
     if(!player.display.birt.sc2) player.display.birt.sc2 = '0c/w';
-    if(!player.build.level){
-        player.build.level = {tda :player.build.tda.level,btf :new Decimal(0)};
-    }
+    if(!player.build.level) player.build.level = {tda :player.build.tda.level,btf :new Decimal(0)};
+    //0.17↓
+    if(!player.display.blocktoast) player.display.blocktoast = {"battle-toast-win":0,"battle-toast-lose":0,"influ-toast":0,"build-toast":0,"achi-toast":0,}
 }//最多同时兼容10个版本
 function complete_achievements(){
     //0.11↓
@@ -141,15 +148,29 @@ function complete_achievements(){
     if(MR>=6) getAchievement(16);
     if(MR>=7) getAchievement(18);
     if(MR>=8) getAchievement(19);
+    if(MR>=9) getAchievement(26);
+    if(MR>=10) getAchievement(34);
     let EP=player.explore.prog;
     if(EP>=1) getAchievement(9);
     if(EP>=4) getAchievement(10);
     if(EP>=12) getAchievement(17);
+    if(EP>=26) getAchievement(35);
+
 
     if(player.build.level.tda.gte(1)) getAchievement(14);
     if(player.build.level.tda.gte(13)) getAchievement(20);
+    if(player.build.level.tda.gte(20)) getAchievement(30);
+
+    if(player.build.level.btf.gte(1)) getAchievement(33);
+
 
     if(player.resources.herb.gt(0)) getAchievement(15);
+
+
+    if(player.influ.upgs[1]) getAchievement(23);
+    if(player.influ.upgs[2]) getAchievement(24);
+    if(player.influ.upgs[3]) getAchievement(28);
+    if(player.explore.bb.gte(999999999999)) getAchievement(32);
 }
 const tickspeed = 50;
 function prepareGame(){
@@ -302,6 +323,8 @@ function calculate_family_bd(gt){//gametime passed
                 if(MR==6) getAchievement(16);
                 if(MR==7) getAchievement(18);
                 if(MR==8) getAchievement(19);
+                if(MR==9) getAchievement(26);
+                if(MR==10) getAchievement(34);
             }
             else player.family.cats[i+1] = player.family.cats[i+1].add(brate);
             player.family.cats[i] = player.family.cats[i].sub(brate);
@@ -363,6 +386,7 @@ function update_work(){
         reproduce_workhour = reproduce_workhour.div(birt_sc2).pow(0.5).mul(birt_sc2);
         player.display.birt.scn=2;
         player.display.birt.sc2 = format_chance_time(reproduce_workhour);
+        getAchievement(27);
     }// 100c/m'二重^0.5软上限
     else player.display.birt.sc2 = "";
 

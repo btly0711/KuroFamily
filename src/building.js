@@ -61,6 +61,7 @@ function update_building(dt){
 
             if(player.build.level.tda.gte(1)) getAchievement(14);
             if(player.build.level.tda.gte(13)) getAchievement(20);
+            if(player.build.level.tda.gte(20)) getAchievement(30);
             
             showAchievementToast([`乱时法阵 Lv.${format_number(player.build.level.tda)} 竣工`,`时间流速 x1.5.`],"build-toast");
         }
@@ -68,6 +69,7 @@ function update_building(dt){
             player.build.level.btf =  player.build.level.btf.add(1);//升级
             //未来这里可能加入折算空间
 
+            if(player.build.level.btf.gte(1)) getAchievement(33);
             
             showAchievementToast([`训练场 Lv.${format_number(player.build.level.tda)} 竣工`,`训练速度 x1.25，战力上限 x1.5.`],"build-toast");
         }

@@ -67,6 +67,8 @@ function update_explore(dt){
     player.display.explore.trp = format_number(player.explore.trp.mul(100)) + '%';
 
     player.explore.bb = player.explore.wh.mul(player.explore.trp).add(1).mul((new Decimal(1.50)).pow(player.build.level.btf));
+    
+    if(player.explore.bb.gte(999999999999)) getAchievement(32);
     player.display.explore.bb = format_number(player.explore.bb) + 'ψ';
 
     player.display.explore.pr = format_number(get_battle_passrate().mul(100)) + '%';
@@ -96,6 +98,7 @@ function location_fight(){
             if(EP==1) getAchievement(9);
             if(EP==4) getAchievement(10);
             if(EP==12) getAchievement(17);
+            if(EP==26) getAchievement(35);
             
         }
         else{

@@ -379,6 +379,36 @@ body{
     top:180px;
     left:180px;
 }
+#battle_toast_win{
+    position:absolute;
+    top:360px;
+    left:0px;
+    color:#ffff00;
+}
+#battle_toast_lose{
+    position:absolute;
+    top:360px;
+    left:180px;
+    color:#ff0000;
+}
+#influ_toast{
+    position:absolute;
+    top:360px;
+    left:360px;
+    color:#02FDEA;
+}
+#build_toast{
+    position:absolute;
+    top:360px;
+    left:540px;
+    color:salmon;
+}
+#achi_toast{
+    position:absolute;
+    top:360px;
+    left:720px;
+    color:#00FF00;
+}
 #get_member{
     background: linear-gradient(to bottom right, white,pink,red,pink,white);
     left:38%;

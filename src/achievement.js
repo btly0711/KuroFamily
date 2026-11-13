@@ -13,23 +13,58 @@ const ACHIEVEMENTS = [
     ["标准劳力","有小猫抵达万物级"],
     ["双倍力量","有小猫抵达万物级高等","解锁探索菜单"],
     ["反正卡上限…","将某境界小猫的修炼时长设为0"],//7
+
     ["探索小队","将小猫分配到探索岗位"],
     ["首战告捷","通过练兵场-1","解锁灵矿，建设菜单"],
     ["界限突破","通过练兵场-4"],
     ["自增循环","有小猫抵达万物级巅峰"],
     ["并不是指数增长","抵达生育一重软上限"],
     ["土木老猫","小猫分配到建筑岗位"],
-    ["时间扭曲","建造第1个乱时法阵"],
-    ["这是……灵药？","扫荡燕岗城-1","解锁灵药，以及突破率加成"],//14
+    ["时间扭曲","建造第1个乱时法阵"],//14
+
+    ["这是……灵药？","扫荡燕岗城-1","解锁灵药，以及突破率加成"],
     ["生存延续","有小猫抵达潮汐级"],
     ["深入地宫","通过燕岗近郊 -4"],
     ["\"第八维度\"","有小猫抵达潮汐级高等"],
     ["第九维度是个谎言","有小猫抵达潮汐级巅峰","解锁影响力重置层(点击图标来重置)"],
     ["十眼一年","时间流速抵达5w'/s"],
-    ["1000年生きてる","游戏内时间抵达1000年"],
-];
-const ACHI_NUM = 21;
+    ["1000年生きてる","游戏内时间抵达1000年"],//21
 
+    ["全新的开始","影响力重置1次"],
+    ["轮回加速","购买第1影响力升级(IU1)"],
+    ["成倍小猫","购买IU2"],
+    ["保留时速","影响力重置3次"],
+    ["第二大境","有小猫抵达大地级初等"],
+    ["大地级太OP了","抵达生育二重软上限"],
+    ["扬名一方","购买IU3"],//28
+
+    ["一探永探","影响力重置10次"],
+    ["真得限速了","乱时法阵达到20个，触发超级折算"],
+    ["盖亚合金","拥有100影响力"],
+    ["无坚不摧","战力达到999,999,999,999ψ"],
+    ["整戈待发","建造训练场"],
+    ["系数提升","有小猫抵达大地级高等"],
+    ["顺流而下","通过清野江畔 - 2"],//35
+];
+const ACHI_NUM = 35;
+/*
+[全新的开始]获得1影响力
+[轮回加速]购买第1影响力升级
+[成倍小猫]购买IU2
+[保留时速]影响力重置3次
+[第二大境]有小猫抵达大地级初等
+[大地级太OP了]抵达生育二重软上限
+[扬名一方]购买IU3
+
+[一探永探]影响力重置10次
+[真得限速了]超级折算|乱时法阵
+[盖亚合金]获取100影响力
+[这下真跑不过了]购买IU4
+[整戈待发]建造训练场
+[系数提升]有小猫抵达大地级高等
+[顺流而下]通过清野江畔 - 2
+
+ */
 
 function LoadAchievement(){
     const achi_table = document.getElementById("achievement_table");
@@ -101,9 +136,16 @@ function RefreshLockedContent(){
         document.getElementById("influ_button").style.display="block";
     }
 }
-
+function change_toastblock(t_cl){
+    if(player.display.blocktoast[t_cl]==1) player.display.blocktoast[t_cl]=0;
+    else  player.display.blocktoast[t_cl]=1;
+}
+window.change_toastblock = change_toastblock;
 
 function showAchievementToast(text,e_cl){
+
+    if(player.display.blocktoast[e_cl]==1) return;
+
     const container = document.getElementById('achievement-toast-container');
     const toast = document.createElement('div');
     toast.classList.add('achievement-toast');

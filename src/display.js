@@ -106,7 +106,6 @@ function renderFamily(gt){
         let bdrate = player.family.rdata[i].br.mul(gt).add(player.family.rdata[i].dd.mul(gt));
         if(bdrate.gte(1)) document.getElementById(`member_list_count_${i}`).innerText =  '※' + format_number(player.family.cats[i].div(bdrate).round());
         else document.getElementById(`member_list_count_${i}`).innerText = format_number(player.family.cats[i]);
-        //WIP:如果不稳定那么带※
 
         //document.getElementById(`member_list_break_${i}`).innerText = '('+format_timedur(player.family.rdata[i].br.pow(-1)) + ')⁻¹';
         //document.getElementById(`member_list_death_${i}`).innerText = '('+format_timedur(player.family.rdata[i].dd.pow(-1)) + ')⁻¹';
@@ -154,6 +153,13 @@ function renderSettings(){
     document.getElementById("format_chosen").innerText = formats[player.display.format];
     document.getElementById("format_eg").innerText = format_number(new Decimal('1.793e308'));
     //计数法
+    let t_cl = ["achievement"]
+    document.getElementById("battle_toast_win").innerText = `战胜弹窗:${player.display.blocktoast["battle-toast-win"]==1?"禁":"启"}用`;
+    document.getElementById("battle_toast_lose").innerText = `战败弹窗:${player.display.blocktoast["battle-toast-lose"]==1?"禁":"启"}用`;
+    document.getElementById("influ_toast").innerText = `影响力弹窗:${player.display.blocktoast["influ-toast"]==1?"禁":"启"}用`;
+    document.getElementById("build_toast").innerText = `建设弹窗:${player.display.blocktoast["build-toast"]==1?"禁":"启"}用`;
+    document.getElementById("achi_toast").innerText = `成就弹窗:${player.display.blocktoast["achi-toast"]==1?"禁":"启"}用`;
+    //弹窗
 }
 function renderFamilyMembers(){
     const chart = document.getElementById("family_member_chart");
