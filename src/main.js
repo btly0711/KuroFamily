@@ -6,7 +6,7 @@ import {update_building , get_tda_effect} from "./building.js";
 import {LoadAchievement,getAchievement , RefreshLockedContent} from "./achievement.js";
 import {ReloadInfluMilestones} from "./influence.js";
 import Decimal from "./break_eternity.js";
-const GAME_VERSION = 'V0.17';
+const GAME_VERSION = 'V0.17a';
 let player ={
     time:{
         cur:new Decimal(0),//存储单位:分钟

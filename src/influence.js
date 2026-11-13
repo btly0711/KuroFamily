@@ -72,7 +72,7 @@ function influ_reset(){
     player.time.cur = new Decimal(0);
     console.log("influ reset complete");
     if(player.influ.times.gte(1)) getAchievement(22);
-    if(player.influ.times.gte(3)) getAchievement(26);
+    if(player.influ.times.gte(3)) getAchievement(25);
     if(player.influ.times.gte(10)) getAchievement(29);
     if(player.influ.points.gte(100)) getAchievement(31);
 
